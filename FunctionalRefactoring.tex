@@ -1,0 +1,76 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{array}
+\usepackage{mdwlist}
+\usepackage{wasysym}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+
+\pagestyle{fancy}
+\headheight 35pt
+\begin{document}
+
+\lhead{\textbf{CSSE377}}
+\rhead{Functional Refactoring \\ 2010.11.08}
+
+\vspace*{60mm}
+\begin{center}
+{ \huge \textbf{Refactoring Techniques \\ in Functional Languages} } \\
+{ \large \textit{Pete Brousalis, Tim Ekl, Tom Most, David Pick, Eric Stokes} }
+\end{center}
+
+\newpage{}
+
+\tableofcontents
+
+\newpage{}
+
+\section{Introduction}
+
+Refactoring, the process of rewriting program code, is a generally accepted practice in the programming world. Programmers will refactor for a variety of reasons: to improve code readability, to change program structure, to increase maintainability, and to reduce complexity, among others. However, the majority of existing refactoring techniques, including those put forth by the ``Gang of Four'', focus largely on object-oriented code; furthermore, university curricula tend to focus on those refactoring practices, given the prevalence of object-orientation as a programming paradigm.
+
+Of late, however, functional languages have begun to emerge as strong competitors to their object-oriented peers in a variety of environments. Many large-scale websites such as Facebook and Twitter use functional programming and paradigms in their application stacks; MapReduce, the core of Google's search technology and scalability, has its root in functional technologies; and even object-oriented languages such as Python and Ruby have begun to adopt several functional practices. As the functional paradigm becomes more prominent, coders must be able to apply refactoring techniques to code where the Gang of Four patterns may no longer apply.
+
+This paper provides a brief insight into the state of refactoring in five different functional languages: Clojure, Erlang, Haskell, Scala, and Scheme. The authors review each language and its applications, then provide examples of common refactoring techniques in use with each of these languages, as well as how those techniques relate to the practice of functional programming as a whole.
+
+\section{History}
+
+The concept of functional languages began with the development of lambda calculus, a mathematical concept used to encapsulate certain ideas about computation. The vast majority of functional languages today are based on ideas derived from lambda calculus \cite{Cu58}.
+
+The first true functional language was Lisp, developed in the late 1950s for IBM scientific computers at MIT. Lisp introduced many concepts common to functional languages now, and spawned a number of dialects, including Common Lisp and Scheme \cite{Mc78}. Over the next few decades, a small number of prevalent functional languages were introduced, including APL and ML. The early 1990s saw a large increase in the number of functional languages available with the advent of J and K, as well as the beginning of the standardization process for Haskell.
+
+Today, functional languages remain somewhat of a specialty: of the top 20 programming languages in use today, the only functional language to hold a spot is Lisp at \#13, with just over 1\% of existing worldwide production code. However, Scheme, Haskell, ML, APL, and Scala all appear in the top 50 programming languages, and most of these are gaining in popularity \cite{TIOBE}.
+
+\section{Clojure}
+
+Tim's paper
+
+\section{Erlang}
+
+Stokes's paper
+
+\section{Haskell}
+
+Tom's paper
+
+\section{Scala}
+
+Pete's paper
+
+\section{Scheme}
+
+David's paper
+
+\section{Conclusion}
+
+To be written
+
+\begin{thebibliography}{9}
+\bibitem{Cu58} Curry, Haskell Brooks; Robert Feys and Craig, William (1958). Combinatory Logic. Volume I. Amsterdam: North-Holland Publishing Company.
+\bibitem{Mc78} McCarthy, John (June 1978). "History of Lisp". In ACM SIGPLAN History of Programming Languages Conference: 173Ð196. doi:10.1145/800025.808387. ``The implementation of LISP began in Fall 1958.''
+\bibitem{TIOBE} ``TIOBE Programming Community Index for October 2010.'' TIOBE Index. TIOBE Software BV, Oct. 2010. Web. 24 Oct. 2010. \verb!<http://www.tiobe.com/index.php/content/paperinfo/tpci/index.html>!.
+\end{thebibliography}
+
+\end{document}
