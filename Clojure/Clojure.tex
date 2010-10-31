@@ -15,9 +15,11 @@
 \lhead{\textbf{CSSE377 \\ Functional Refactoring}}
 \rhead{November 2011 \\ Clojure}
 
+\section{Clojure}
+
 Clojure is a dialect of Lisp, developed as a functional companion to Java that targets existing Java Virtual Machines (JVMs) and is therefore compatible with preexisting Java projects. 
 
-\subsection*{Language Background}
+\subsection{Language Background}
 
 Clojure first appeared in 2007 as a personal project of Rich Hickey, who explained that he wanted a language which:
 
@@ -28,26 +30,28 @@ Clojure first appeared in 2007 as a personal project of Rich Hickey, who explain
 \item was designed for concurrency
 \end{itemize*}
 
-No such language existed to Hickey's satisfaction, and thus Clojure was born. Since inception, Clojure has rapidly expanded to become a complete Lisp dialect, unconstrained by what Hickey calls the ``slow innovation'' of both Common Lisp and Scheme since their respective standardizations. Since Clojure is not restricted by the scope of those dialects' standards, it can become a more flexible language, so long as it adheres to the JVM specification in compilation.
+No such language existed to Hickey's satisfaction, and thus Clojure was born. Since inception, Clojure has rapidly expanded to become a complete Lisp dialect, unconstrained by what Hickey calls the ``slow innovation''\cite{1} of both Common Lisp and Scheme since their respective standardizations. Since Clojure is not restricted by the scope of those dialects' standards, it can become a more flexible language, so long as it adheres to the JVM specification in compilation.
 
-Clojure is a compiled language. Once written, Clojure code is converted to JVM bytecode that can be natively interpreted by any JVM, including the Sun standard virtual machines. As compiled, it supports the complete Java specification, including type hinting and inference; it avoids reflection where possible. 
+Clojure is a compiled language. Once written, Clojure code is converted to JVM bytecode that can be natively interpreted by any JVM, including the Sun standard virtual machines. As compiled, it supports the complete Java specification, including type hinting and inference; it avoids reflection where possible.
 
-\subsection*{Refactoring in LANGUAGE}
+Furthermore, as a Lisp dialect, Clojure is highly functional. It contains a lambda calculus core, and extends the paradigm of ``code as data'' to Java maps and vectors. All data types implemented in Clojure are immutable and persistent, making both recursion and concurrency easy and reliable.
 
-Write 3--3.5 pages about refactoring in your particular language. Be sure to include code snippets and follow through the refactoring process of at least one decently-sized chunk of code. You can use
+Finally, Clojure adheres to Java's polymorphic behavior, providing the ability to subclass and abstract certain parts of written code. It does not provide its own class system, instead preferring to provide many methods that operate on a relatively small number of classes and objects. Hickey asserts that ``inheritance is \textit{not} the only way to do polymorphism''\cite{1}, and attempts to get away from the object-oriented paradigm while still embracing the underlying Java platform.
 
-\begin{verbatim}
-// code blocks
-\end{verbatim}
+\subsection{Refactoring in Clojure}
 
-as well as \verb!inline verbatim! blocks to format code. Don't forget about $math \; markup$ if you're dealing with anything mathy like algorithm analysis or functional composition.
+As with most functional languages, Clojure is not subject to the usual set of refactoring techniques available for object-oriented architectures. Instead, Clojure has developed its own set of potential refactorings, nurtured and encouraged by Hickey.
 
-\subsection*{Conclusion}
+\subsubsection{Rename refactoring}
+
+One of the simplest refactoring techniques available in Clojure is a simple rename. 
+
+\subsection{Conclusion}
 
 Wrap up your section with a 0.5--1 page conclusion that recaps refactoring in your language and discusses any emerging concepts or practices in your language.
 
 \begin{thebibliography}{9}
-\bibitem{Item1} Item One
+\bibitem{1} Hickey, Richard. "Clojure: Rationale." Clojure - Rationale. Web. 28 Oct. 2010. \verb!<http://clojure.org/rationale>!.
 \end{thebibliography}
 
 \end{document}
