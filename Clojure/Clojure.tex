@@ -44,7 +44,39 @@ As with most functional languages, Clojure is not subject to the usual set of re
 
 \subsubsection{Rename refactoring}
 
-One of the simplest refactoring techniques available in Clojure is a simple rename. 
+One of the simplest refactoring techniques available in Clojure is a simple rename. While relatively trivial to do, this is also a fairly powerful technique - Hickey has gone so far as to call it ``the number one refactoring''\cite{2}. The simplicity of the technique comes from the static typing of names within any program. For example, when attempting to refactor a variable \verb!bar! within the \verb!foo! namespace (written as \verb!foo/bar!), it is trivial for a good IDE or compiler to determine what instances of \verb!bar! are syntactically equivalent to the target \verb!bar! by checking the variables' scope and namespaces. Hence, for the Clojure snippet:
+
+\begin{verbatim}
+(def bar 1)
+
+(defn foo[]
+    (let [bar 2]
+        (println bar)))
+\end{verbatim}
+
+Renaming the inner variable \verb!bar! would resolve to the local instance defined within the \verb!let! statement (and hence apply the rename refactoring to that \verb!let!), while renaming the instance of \verb!bar! defined in the \verb!def! statement would have no other effects (since there are no inner instances of \verb!bar!) that resolve to that definition. The results of these two refactorings are shown as follows:
+
+\begin{tabular}{m{2in} m{2in}} \\
+\begin{verbatim}
+// Rename def'd bar
+(def baz 1)
+
+(defn foo[]
+    (let [bar 2]
+        (println bar)))
+\end{verbatim}
+&
+\begin{verbatim}
+// Rename let'd bar
+(def bar 1)
+
+(defn foo[]
+    (let [baz 2]
+        (println baz)))
+\end{verbatim}
+\end{tabular}
+
+The advantage of this refactoring technique lies primarily in its potential to enhance code readability and maintainability - a developer who can make sense of variable naming schemes and understanding the meaning underlying a piece of code is much more likely to be productive and make workable changes than one who has no idea what's going on in a code snippet. Furthermore, this technique is especially powerful because of the simplicity of its application - a sufficiently ``intelligent'' editing environment can easily handle this sort of change, and in fact several projects exist on GitHub that handle precisely this refactoring (most notably \verb!clojure-refactoring! by Tom Crayford \cite{3}).
 
 \subsection{Conclusion}
 
@@ -52,6 +84,8 @@ Wrap up your section with a 0.5--1 page conclusion that recaps refactoring in yo
 
 \begin{thebibliography}{9}
 \bibitem{1} Hickey, Richard. "Clojure: Rationale." Clojure - Rationale. Web. 28 Oct. 2010. \verb!<http://clojure.org/rationale>!.
+\bibitem{2} Hickey, Richard. "Re: Refactoring? - Richard Hickey - com.googlegroups.clojure - MarkMail." Mailing List. com.googlegroups.clojure. Google Groups, 23 July 2008. Web. 31 Oct. 2010. \verb!<http://markmail.org/message/btbnpxvuyob5xrig>!.
+\bibitem{3} Crayford, Tom. tcrayford's Clojure-refactoring at Master - GitHub. Clojure-refactoring. 23 Jan. 2010. Web. 31 Oct. 2010. \verb!<http://github.com/tcrayford/clojure-refactoring>!.
 \end{thebibliography}
 
 \end{document}
