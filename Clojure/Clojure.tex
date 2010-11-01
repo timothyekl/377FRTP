@@ -42,9 +42,9 @@ Finally, Clojure adheres to Java's polymorphic behavior, providing the ability t
 
 As with most functional languages, Clojure is not subject to the usual set of refactoring techniques available for object-oriented architectures. Instead, Clojure has developed its own set of potential refactorings, nurtured and encouraged by Hickey.
 
-\subsubsection{Rename refactoring}
+\subsubsection{Rename Variable}
 
-One of the simplest refactoring techniques available in Clojure is a simple rename. While relatively trivial to do, this is also a fairly powerful technique - Hickey has gone so far as to call it ``the number one refactoring''\cite{2}. The simplicity of the technique comes from the static typing of names within any program. For example, when attempting to refactor a variable \verb!bar! within the \verb!foo! namespace (written as \verb!foo/bar!), it is trivial for a good IDE or compiler to determine what instances of \verb!bar! are syntactically equivalent to the target \verb!bar! by checking the variables' scope and namespaces. Hence, for the Clojure snippet:
+One of the simplest refactoring techniques available in Clojure is a simple rename. While relatively trivial to do, this is also a fairly powerful technique - Hickey has gone so far as to call it ``the number one refactoring''\cite{2}. The simplicity of the technique comes from the static typing of names within any program. For example, when attempting to refactor a variable \verb!bar! within the \verb!foo! namespace (written as \verb!foo/bar!), it is trivial for a good IDE or compiler to determine what instances of \verb!bar! are syntactically equivalent to the target \verb!bar! by checking the variables' scope and namespaces. Hence, given the Clojure snippet:
 
 \begin{verbatim}
 (def bar 1)
@@ -77,6 +77,43 @@ Renaming the inner variable \verb!bar! would resolve to the local instance defin
 \end{tabular}
 
 The advantage of this refactoring technique lies primarily in its potential to enhance code readability and maintainability - a developer who can make sense of variable naming schemes and understanding the meaning underlying a piece of code is much more likely to be productive and make workable changes than one who has no idea what's going on in a code snippet. Furthermore, this technique is especially powerful because of the simplicity of its application - a sufficiently ``intelligent'' editing environment can easily handle this sort of change, and in fact several projects exist on GitHub that handle precisely this refactoring (most notably \verb!clojure-refactoring! by Tom Crayford \cite{3}).
+
+\subsubsection{Extract Expression}
+
+A refactoring that has a strong similarity to a well-known object-oriented technique, extracting an expression also has powerful implications for many Clojure programs. Many times, developers will find a common task being performed repeatedly, and would benefit strongly from taking that task or expression and extracting it each place it is used, placing it into a function instead.
+
+Consider, as a trivial example, a reimplementation of the Java method \verb!modPow!, which takes as arguments three integers $a, b, c$ and returns the result of the expression $a^{b} \; mod \; c$. (This method has common use in cryptographic and modular arithmetic fields.) We could write, for example, an encryption-decryption algorithm for RSA which would take a message $m$ and a public key $(n, e)$, encrypt it, decrypt it with a private key $d$, and assert that the decrypted text is equivalent to the original method (e.g. for implementation testing). Without refactoring, this method might look like:
+
+\begin{verbatim}
+// Encrypt and decrypt a message using RSA
+// Args: message m, public key (n, e), private key d
+(defn encryptDecrypt [m n e d]
+    (let [c (mod (pow m e) n)]
+        (let [m2 (mod (pow c d) n)]
+            (= m m2))))
+\end{verbatim}
+
+We note that the pattern \verb!(mod (pow x y) z)! appears multiple times, and thus we may extract that expression, simplifying the \verb!let! statement and making the functionality it provides available to other users:
+
+\begin{verbatim}
+// Exponentiate and mod the given numbers
+// Args: x y z; returns ((x ^ y) mod z)
+(defn modPow [x y z]
+    (mod (pow x y) z))
+
+// Encrypt and decrypt a message using RSA
+// Args: message m, public key (n, e), private key d
+(defn encryptDecrypt [m n e d]
+    (let [c (modPow m e n)]
+        (let [m2 (modPow c d n)]
+            (= m m2))))
+\end{verbatim}
+
+\subsubsection{Flatten Let}
+
+\subsubsection{Flatten Reduce}
+
+\subsubsection{Compose Function}
 
 \subsection{Conclusion}
 
