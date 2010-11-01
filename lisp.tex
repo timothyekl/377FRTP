@@ -13,23 +13,18 @@
 \begin{document}
 
 \lhead{\textbf{CSSE377 \\ Functional Refactoring}}
-\rhead{November 2011 \\ YOUR LANGUAGE}
-
-You are responsible for at least \textbf{five pages} of paper on your language with default margins, single-spaced. I'd like to see something at least close to final by \textbf{Monday, November 1}. Language assignments:
-
-\begin{itemize*}
-\item Tim - Clojure
-\item Stokes - Erlang
-\item Pete - Scala
-\item Tom - Haskell
-\item David - Scheme
-\end{itemize*}
+\rhead{November 2011 \\ Lisp}
 
 \subsection*{Language Background}
 
-Write 1--1.5 pages on the history of your language, its common uses today, and any particular idiosyncrasies or quirks your language possesses. Assume your reader is technical, but has no background in your language specifically; relate it to other common languages. Do not reference any other functional languages we're using.
+Originally created in 1958, Lisp is the second oldest high-level programming language still in use. The name Lisp comes from 'list processing' as linked-lists are one of the most important data structures in the language, along with the fact that the entire source code for the language is made up of lists. Since List source code is made up of lists, the language allows a developer to manipulate source code as a data structure. This lead to the creation of macro systems which allow programmers to create new syntax, and domain specific languages based on the original Lisp language.
 
-\subsection*{Refactoring in LANGUAGE}
+\\A domain specific language is one that is based on a language such as List, but provides specific syntax for handling a specific problem domain. For instance if someone were to modify the original list language with specific functions for creating web applications, they would have created a domain specific language.
+
+\\Lisp and languages based on it can easily be recognized by their extreme use of parenthesis as well as the s-expressions that are used to write in the language. An S-expression or symbolic-expression are list-based data structures, used to represent semi-structured data. A simple example of an S-expression would be (+ 2 2). This S-expression highlights Lisp prefix notation, where unlike most other languages operators come first in the S-expression while everything else is treated as data. The combination of prefix-notation and S-expressions makes Lisp extremely easy to parse and lead to the creation of two extremely well known functions car and cdr. Car returns the first part of an S-expression, while cdr will return the data portion of the S-expression.
+
+
+\subsection*{Refactoring in Lisp}
 
 Write 3--3.5 pages about refactoring in your particular language. Be sure to include code snippets and follow through the refactoring process of at least one decently-sized chunk of code. You can use
 
