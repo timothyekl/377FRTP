@@ -42,6 +42,8 @@ Finally, Clojure adheres to Java's polymorphic behavior, providing the ability t
 
 As with most functional languages, Clojure is not subject to the usual set of refactoring techniques available for object-oriented architectures. Instead, Clojure has developed its own set of potential refactorings, nurtured and encouraged by Hickey.
 
+Note: throughout the remainder of this section, code blocks may contain comments prefixed by the traditional C double forward slash; this is not standard Clojure, but is used for readability and conciseness. The actual Clojure comment operator is \verb!(comment ...)!.
+
 \subsubsection{Rename Variable}
 
 One of the simplest refactoring techniques available in Clojure is a simple rename. While relatively trivial to do, this is also a fairly powerful technique - Hickey has gone so far as to call it ``the number one refactoring''\cite{2}. The simplicity of the technique comes from the static typing of names within any program. For example, when attempting to refactor a variable \verb!bar! within the \verb!foo! namespace (written as \verb!foo/bar!), it is trivial for a good IDE or compiler to determine what instances of \verb!bar! are syntactically equivalent to the target \verb!bar! by checking the variables' scope and namespaces. Hence, given the Clojure snippet:
@@ -87,6 +89,7 @@ Consider, as a trivial example, a reimplementation of the Java method \verb!modP
 \begin{verbatim}
 // Encrypt and decrypt a message using RSA
 // Args: message m, public key (n, e), private key d
+// Returns true if encrypted-decrypted message matches original
 (defn encryptDecrypt [m n e d]
     (let [c (mod (pow m e) n)]
         (let [m2 (mod (pow c d) n)]
@@ -103,17 +106,78 @@ We note that the pattern \verb!(mod (pow x y) z)! appears multiple times, and th
 
 // Encrypt and decrypt a message using RSA
 // Args: message m, public key (n, e), private key d
+// Returns true if encrypted-decrypted message matches original
 (defn encryptDecrypt [m n e d]
     (let [c (modPow m e n)]
         (let [m2 (modPow c d n)]
             (= m m2))))
 \end{verbatim}
 
-\subsubsection{Flatten Let}
-
 \subsubsection{Flatten Reduce}
 
+This technique is one of the first not to have a clear object-oriented counterpart. It deals strongly with the \verb!reduce! function, which takes a sequence (the Clojure term for a collection of values) and applies a function repeatedly until the sequence is reduced to a single variable. This function finds heavy use in so-called \textit{map-reduce} applications, where sets of data are broken apart, transformed with the \verb!map! function, and merged back into single sets. Due to the chunked nature of the task, map-reduce programs are commonly written in highly concurrent functional languages; as such, good refactoring techniques can greatly improve a common application of Clojure and other functional languages.
+
+To illustrate this particular refactoring technique, consider the task of summing numbers contained in a three-dimensional array (represented in Clojure by nested symbol lists). While this can be done recursively, for the purposes of flattening reduces we write the original scenario using the \verb!reduce! function:
+
+\begin{verbatim}
+// For convenience, predefine the dataset (a 3D integer array)
+(def xs '(((1 2) (3 4)) ((5 6) (7 8))))
+
+// Provide the sum of all integers in the set
+(reduce (fn [acc x]
+    (reduce (fn [acc y]
+        (reduce (fn [acc z] (+ acc z)) acc y)) acc x)) 0 xs)
+\end{verbatim}
+
+The repeated explicit application of \verb!reduce! is what we seek to eliminate with this refactoring. In Clojure, the \verb!for! keyword allows developers to apply certain operations over nested sets of objects by flattening those sets; we can apply a \verb!for! operation on the \verb!reduce! to improve the clarity and conciseness of this code block:
+
+\begin{verbatim}
+// For convenience, predefine the dataset (a 3D integer array)
+(def xs '(((1 2) (3 4)) ((5 6) (7 8))))
+
+// Apply the reduce for each of the three dimensions
+(reduce (fn [a b] (+ a b)) 0 (for [x xs, y x, z y] z))
+\end{verbatim}
+
+Whether this refactoring truly improves clarity is a subject of some debate; the syntax of the \verb!for! operator is not immediately obvious, especially if the underlying data structure is not understood. In this example, the \verb!for! expands \verb!xs! to a set of objects represented individually as \verb!x!, then does the same for each \verb!y! in \verb!x! and \verb!z! in \verb!y!. It returns a single flattened sequence of integers that originally belonged to separate sublists in the three-dimensional \verb!xs!; at that point, the \verb!reduce! may be applied over the single sequence. Note that the structure of the original dataset can be ``ignored'' in this manner since it is being reduced away regardless; operations where nesting level matters, or where additional information must be retained about the original data structure, flattening reduces is not always possible.
+
 \subsubsection{Compose Function}
+
+Functional languages tend to borrow somewhat heavily from the more formally mathematical side of computer science, and Clojure is no exception -- its core in lambda calculus and pure nature make it a strong candidate for mathematical applications. As such, some refactoring techniques are derived from mathematical operations, such as the composition of functions.
+
+Consider a basic Clojure implementation of the ROT-13 encryption algorithm on a sequence of integers representing ASCII values of capital letters. In this algorithm, there are four basic building blocks:
+
+\begin{itemize*}
+\item Subtracting 65 to find the 0-indexed position within the alphabet of the given value
+\item Adding 13 for the rotation
+\item Taking the modulus (base 26) of the new value
+\item Adding 65 to return to the domain of ASCII values
+\end{itemize*}
+
+In an overly verbose implementation, each of these might be separated, as such:
+
+\begin{verbatim}
+(defn asciiToZeroIndex [x] (- x 65))
+(defn zeroIndexToAscii [x] (+ x 65))
+(defn rotate [x] (+ x 13))
+(defn alphabetMod [x] (mod x 26))
+
+// The function might then be applied as
+(map zeroIndexToAscii
+    (map alphabetMod
+        (map rotate
+            (map asciiToZeroIndex 
+                '(72 69 76 76 79 87 79 82 76 68)))))
+\end{verbatim}
+
+While very compartmentalized and almost painfully obvious as to the purpose of individual functions, the application of this ROT-13 implementation is somewhat lacking in clarity and quite verbose. In addition, there is rarely a call for any of those functions outside the context of the others -- when does a programmer turn to a function called \verb!alphabetMod! instead of simply performing the \verb!mod!? As such, we may compose these four functions together to come up with a single clean ROT-13 function:
+
+\begin{verbatim}
+(defn rot13 [x] (+ (mod (+ (- x 65) 13) 26) 65))
+
+// Apply function
+(map rot13 '(72 69 76 76 79 87 79 82 76 68))
+\end{verbatim}
 
 \subsection{Conclusion}
 
