@@ -26,13 +26,78 @@ Originally created in 1958, Lisp is the second oldest high-level programming lan
 
 \subsection*{Refactoring in Lisp}
 
-Write 3--3.5 pages about refactoring in your particular language. Be sure to include code snippets and follow through the refactoring process of at least one decently-sized chunk of code. You can use
+Extract Function
 
-\begin{verbatim}
-// code blocks
-\end{verbatim}
+One of the easiest programming pitfalls to fall into is the creation of functions that are longer than need to be or should be. While there are several reasons that a developer should attempt to write shorter methods, the first and most important is that it increases the likelihood that other functions can use a function. This one simple refactoring technique will allow higher level functions to read much better since they will call well named functions which can actually be read similarly to how a comment would. While this idea does take some getting used to if a developer is used to writing longer functions, the addition of small functions with good, clear names will greatly improve the readability, modifiability, and understandability of a code base. 
 
-as well as \verb!inline verbatim! blocks to format code. Don't forget about $math \; markup$ if you're dealing with anything mathy like algorithm analysis or functional composition. Also be sure to cite your sources! (This may require you to compile the paper twice to make the citations work\cite{Item1}.)
+(defun list-to-comma-delimited-string (list)
+  (let ((output (format nil "~A" (car list))))
+    (dolist (elem (cdr list))
+      (setq output (concatenate 'string output "," (format nil "~A" elem)))))
+
+This function is a good example of one that is trying to do too much. By calling a second function designed for the formatting of strings, the developer can make the original function much easier to read and understand.
+
+(defun list-to-comma-delimited-string (list)
+  (format nil "~{~A~^,~}" list))
+
+
+Rename Function / Variable
+
+The first refactoring technique introduced in this section of the paper was the idea of short functions. However, in order for short functions to work properly as a refactoring technique all functions and variables must be named in a clear manor that gives the developer an idea of what their purpose. Functions need to be named in such a way that communicates their intention. A good way to do this is to think of what a comment would be for a function and try and incorporate that into the name of the function. This is an extremely important technique that can take some time to master. While attempting to understand this technique a developer should not be happy with their first attempt at naming a function. If it is clear that a function will end up preforming a different function from when it was named, simply change the name. The developer must remember that the code they are writing is meant for humans to read, and the best way to make their code understanding is through well named functions and variables. 
+
+A simple example of this would be the following function:
+
+(defun rev (L)
+  (let ((return-value '()))
+    (dolist (e L) (push e return-value))
+    return-value))
+
+While after reading the code for this function it may be apparent that it reverses a list, reading a call to this function from another one would not make that fact obvious. This means that as a developer is reading a function which calls this one, they will be forced to read the code for this function to understand the one they are currently looking at. This will tend to break their train of thought and force them to spend a significant amount of extra time reading code that could have been avoiding through a function name that made sense.
+
+(defun reverse-list (list)
+  (let ((return-value '()))
+    (dolist (e list) (push e return-value))
+    return-value))
+
+By naming the function reverse-list instead of rev, it becomes apparent that this function will reverse the passed in list without having to look at the code for it.
+
+Along the same lines it is just as important to name variables inside of functions well. By naming a variable in clear manor a developer can make his application much more readable. In Lisp it is very common to create a variable to pass to a recursive function to act as an accumulator. While the developer has the choice to name this variable whatever they want it can often be helpful to name it something that makes it obvious to another developer that this variable is the accumulator. Looking at the same reverse list function as before we can see this.
+
+(defun reverse-list (list)
+  (let ((r '()))
+    (dolist (e list) (push e r))
+    r))
+
+In this function the variable r acts as the accumulator for the function. However, it is very difficult to figure this out in the function and once a developer has figured out that r is the value to be returned it can be difficult for them to remember that each time they see the variable. In order to combat this issue a developer should attempt to name their variables in a clear manor.
+
+(defun reverse-list (list)
+  (let ((return-value '()))
+    (dolist (e list) (push e return-value))
+    return-value))
+
+
+This function is much easier to understand than the first version, it is very apparent what the purpose of the return-value variable is.
+
+Code Organization
+
+One of the simplest yet most powerful refactoring techniques is simply how the code is formatted in a file. In Lisp since every function called must be made in a set of parenthesis it becomes quite easy to miss where one set of parenthesises beings and another ends. In order to avoid this confusion formatting the code such that new function calls appear on a new line and are indented and greatly help the readability of the code.
+
+(fomus :output '(:lilypond :view t) :parts (list (make-part :name "Piano" :instr :piano :events (loop repeat 10 for off = (random 30.0) and dur = (1+ (random 3.0)) collect (make-note :off off :dur dur :note (+ 60 (random 25)))))))
+
+While this is in fact valid lisp code, it is extremely difficult to read and understand. By simply adding in a few line breaks and tabs you can end up with a function that is much clearer.
+
+(fomus
+ :output '(:lilypond :view t)
+ :parts
+ (list
+  (make-part
+   :name "Piano"
+   :instr :piano
+   :events
+   (loop repeat 10
+	 for off = (random 30.0)
+	 and dur = (1+ (random 3.0))
+	 collect (make-note :off off :dur dur :note (+ 60 (random 25)))))))
 
 \subsection*{Conclusion}
 
