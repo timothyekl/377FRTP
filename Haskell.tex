@@ -1,0 +1,142 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{array}
+\usepackage{mdwlist}
+\usepackage{wasysym}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+
+\usepackage{fancyvrb}
+\usepackage{cite}
+\usepackage{color}
+\usepackage[colorlinks,backref]{hyperref}
+
+\input{StyleDefs.tex}
+
+\pagestyle{fancy}
+\headheight 35pt
+\begin{document}
+
+\lhead{\textbf{CSSE377 \\ Functional Refactoring}}
+\rhead{November 2011 \\ Haskell}
+
+% FIXME: All " need to be replaced with double backticks
+
+\section{Haskell}
+
+Haskell is a purely functional language known for its laziness and powerful static type system that has served as an academic testbed for twenty years.
+
+\subsection{Language Background}
+
+The Haskell has its roots in academia, having been created in 1987 to replace several similar non-strict functional languages to reduce duplication of effort and provide a common baseline\cite{hudak2007history}.
+It is named after the mathematician Haskell Curry, who also lent his name to the \textit{currying} so fundamental to the language.
+This academic background, along with an informal community determination to	"avoid success at all costs,'' meaning to avoid widespread commercial use so as to allow the language to continue evolution, has kept Haskell out of common use in industry today, it has seem some use\cite{haskellinindustry}.
+
+Aside from being a functional language, one of the most unique features of Haskell is \textit{laziness}, more formally known as \textit{non-strict evaluation}.
+This means that expressions are not evaluated until their values are required, and is possible because functional purity means that a function's output depends only on its input, and not on any external context that may change depending on when it is executed.
+This deferral of execution is both an optimization which sacrifices memory for processor time and enables new programming techniques.
+One example is that of infinite sequences.
+Though this concept is present in other languages --- Python's \verb!itertools.count! being one example of language tools that create explicit laziness via the iterator concept\cite{pythonitertools} --- it does not require special syntax or the contortions common to programming with iterators.
+The most trivial example of this is a sequence of increasing integers, which can be generated in Haskell as follows:
+
+\input{Listings/HaskellInfiniteSeq.hs.listing}
+
+\noindent The \verb!:! operator is like Scheme's \verb!cons!; it creates a new linked-list node.
+To generate a sequence starting at zero, call \verb!seq 0!.
+\verb!take 5 (seq 0)! would evaluate to the list \verb![0, 1, 2, 3, 4]!.
+
+A more interesting example of this is a pseudo-random number generator.
+Instead of implementing a random number generator as an object that encapsulates its state, the generator is simply a function which returns an infinite list containing the numeric sequence based on a given seed value.
+Because of lazy evaluation the infinite loop that the function uses to generate the list is only executed as elements in the list are accessed.
+
+
+It is often said that a Haskell program that compiles --- once it compiles --- is more likely to be correct than in most languages.
+This is because Haskell's type system is extremely strict, yet expressive, allowing programs to be phrased in terms of types.
+\textit{Typeclasses} are one of the language's main innovations\cite{hudak2007history}.
+They provide functionality like a combination of interfaces and abstract classes --- a type can implement more than one typeclass, like an interface, but the typeclass can include implementation like an abstract class.
+One concept familiar from object-oriented languages is missing: the type system has no concept of inheritance.
+\textit{Algebraic types} are another interesting feature.
+They allow specification of several alternatives within a single type:
+
+\input{Listings/HaskellAlgebraicTypes.hs.listing}
+
+\noindent This snippet defines a new datatype, where \verb!a! is a \textit{type variable}, which is like the type parameter in Java generics or C++ templates.
+Pattern matching can be performed in a function definition as follows.
+
+\input{Listings/HaskellPatternMatching.hs.listing}
+
+\noindent The \verb![]! syntax crates a list, and the binary operator \verb!++! concatenates lists.
+
+Haskell has another important form of type declaration: \verb!data!:
+
+\input{Listings/HaskellDataDeclaration.hs.listing}
+
+\noindent Here, \verb!data ThreeStrings! declares the type name, and the second \verb!ThreeStrings! is the name of the \textit{type constructor}.  The constructor can be used as a function, taking three \verb!String! values.  \verb!deriving (Show)! indicates that this type implements the \verb!Show! typeclass, which gives it an implementation of the \verb!show! function to print it.
+
+One more feature of Haskell bears mentioning: type inference.  Like the modern object-oriented languages D and Go, Haskell does not force users to specify types when they can be inferred automatically.  It does allow type annotations, however, and these are commonly used on functions as both documentation and to ensure correctness:
+
+\input{Listings/HaskellTypeAnnotation.hs.listing}
+
+Other distinctive Haskell features include monads, the way that the pure language manages I/O and other side effects, and automatic parallelization/concurrency, though there is not enough space to discuss them here.
+
+\subsection{Refactoring in Haskell}
+
+As is fitting, refactoring Haskell code tends to involve manipulation of function scope or types.  Two such methods are represented below.
+
+The following example module will be used to demonstrate refactoring in Haskell.  It exposes a \verb!BinTree! data type representing a binary tree and several functions to compute traversals of it.  This example is adapted from an assignment given in Curt Clifton's CSSE403 course\cite{clifton2010}.
+
+\input{Listings/HaskellRefactoring1.hs.listing}
+
+The \verb!module! declaration at the top of the file includes a list of the symbols exported by the module.
+Any not listed here are considered private and are inaccessible elsewhere.
+
+\subsubsection{Demoting a Definition}
+
+The most immediate change to be made is to move the definition of \verb!loHelper! to the local scope of the \verb!levelorder! function.  
+While this might seem like a contrived example, this operation is common when writing Haskell functions, as maintaining the helper function externally makes it testable in the interactive prompt.
+This is called \textit{demoting a definition}\cite{li2006refactoring}, and is also the reverse of  is the reverse of the refactoring known as "lambda-lifting" (or $\lambda$-lifting)\cite{haskellwikilifting}.
+The mechanics of this refactoring are straightforward; first move the definition to within \verb!levelorder! and then renaming it to improve readability:
+
+\input{Listings/HaskellRefactoringDemotion.hs.listing}
+
+\subsubsection{Concrete to Abstract Data Type}
+
+One potential problem with this code is that the internals of the \verb!BinTree! data type are exposed to the world.
+Clients of the module can call the \verb!IntNode! and \verb!ExtNode! constructors and perform pattern matching on the tree structure.
+If the tree represented is balanced, one alternative representation would be:
+
+\input{Listings/HaskellAlternateTree.hs.listing}
+
+\noindent But if the maintainer of the module were to convert it to use this representation, all client code would have to be modified to match against the new structure\cite{thompson2005refactoring}.
+In order to ease the introduction of such changes, the \verb!BinTree! data type can be made abstract, hiding its implementation details outside the module.
+This is a composite refactoring, involving modifying the module's exports and adding new functions that expose semantic information about the data structure.
+By removing the raw type constructors from the export list they can be hidden from external modules.
+Finally, functions that use pattern matching are rewritten to use the new functions instead of pattern matching on the data structure.
+
+First, modify the module declaration to remove the type constructors and add some of the functions to be written:
+
+\input{Listings/HaskellRefactoringModuleStatement.hs.listing}
+
+Second, add the new functions by which the data structure is exposed.  As the actual representation hasn't been changed, the constructors exposed externally can simply alias the internal ones.
+
+\input{Listings/HaskellRefactoringNewFunctions.hs.listing}
+
+Finally, rewrite functions to use the new interface.  This example uses the Haskell syntactic feature known as a \textit{guard}, which functions much like a string of if..else statements in another language.
+
+\input{Listings/HaskellRefactoringRewrite.hs.listing}
+
+\subsection{Conclusion}
+
+Haskell is unique among the popular functional languages for its laziness and powerful type system, leading to increased interest in the language in recent years after twenty spent in academia.
+Refactoring in Haskell is a fairly young practice, as projects large enough to call for a formal approach have only recently emerged.
+The only tool available to assist is HaRe, the Haskell Refactorer\cite{li2006refactoring}, a product of research at the University of Kent.
+It includes support for the refactorings described above, as well as several others.
+The purely functional nature of the language tends to limit the complexity of refactorings, which are typically fairly simple mechanical transformations when dealing with functions, but can be more complex when manipulating types.
+
+
+\bibliography{HaskellBibliography}
+\bibliographystyle{plain}
+
+\end{document}
