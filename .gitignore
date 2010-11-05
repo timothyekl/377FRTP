@@ -11,3 +11,12 @@ Clojure/Clojure.aux
 Clojure/Clojure.log
 Clojure/Clojure.pdf
 Clojure/Clojure.synctex.gz
+Lisp/lisp.aux
+Lisp/lisp.log
+Lisp/lisp.pdf
+Lisp/lisp.synctex.gz
+Erlang/Erlang.aux
+Erlang/Erlang.log
+Erlang/Erlang.pdf
+Erlang/Erlang.synctex.gz
+.DS_Store
