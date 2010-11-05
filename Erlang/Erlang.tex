@@ -14,104 +14,108 @@
  
 \lhead{\textbf{CSSE377 \\ Functional Refactoring}}
 \rhead{November 2011 \\ Erlang}
+
+\section{Erlang}
+
+\subsection{Language Background}
  
-\subsection*{Language Background}
+Erlang has been around since around 1987\cite{AR07}. At that time, it was considered a declarative language: a high-level language that prefers to state what is to be done rather than how to do it\cite{EB10}. Declarative languages are considered to be a higher genre of both logic and functional languages. By 1995, Erlang had shifted to be considered a functional language with concurrency\cite{AR07}. This simply means that the language was further defined, creating a more focused view and better goals of the language. Functional languages differ from declarative in the style of the language: functional programming languages have deep roots in mathematics, and thus the style is very mathematical\cite{EB10}. These languages are comprised largely of functions and applying arguments to them.
+
+Later, as of 2005, Erlang was considered a concurrent language whose components are written in a functional style\cite{AR07}. The shift in titles means that as of late, people are considering the concurrent style of Erlang to be the primary focus of the language. There are many other functional languages, but not as many that focus primarily on concurrency. Concurrency makes debugging, analyzing and testing programs especially difficult, which is why it is refactoring is so important in such languages. With many concurrent processes going on at the same time, debugging is near useless on a high level, which is why being able to break our code apart and make it more readable is so important. With concurrent languages, it is also important to keep code efficiency and reusability high, which refactoring can help with as well.
  
-Erlang has been around since around 1987 and was considered a declarative language at that time.\cite{AR07}  A declarative language that is being described here is a high level language that prefers to state what is to be done rather than how to do it.\cite{EB10} Declarative languages are considered to be a higher genre of both logic and functional languages. As time progressed, Erlang was considered a functional language with concurrency, as of 1995.\cite{AR07} This simply means that the language was further defined, creating a more focused view and better goals of the language. Functional languages differ from declarative, in the style of the language. Functional programming languages have deep roots in mathematics, and thus the style is very mathematical.\cite{EB10} These languages are comprised largely of functions and applying arguments to them. Later, as of 2005, Erlang is now considered a concurrent language whose components are written in a functional style.\cite{AR07} The shift in titles means that as of recent, people are considering the concurrent style of Erlang to be the primary focus of the language.  There are many other functional languages, but not as many that focus primarily on concurrency.  Concurrency makes debugging, analyzing and testing programs espically difficult which is why it is so important to refactor the code.  With many concurrent processes going on at the same time, debugging is near useless on a high level, which is why being able to break our code apart and make it more readable is so important.  With concurrent languages, it is also important to keep code efficiency and reusability high, which refactoring can help a bunch with also.
+There have been many other milestones that have brought Erlang to where it is today. The first true release of Erlang to users took place in 1991. This was after almost 10 years of development, once Erlang was fast enough to be considered usable\cite{ERHIST}. Only one year later, Erlang was ported to VxWorks, PC and Mac\cite{ERHIST}. This allowed many more users to take a look and experiment with Erlang. The increase of platforms was a huge point for Erlang, with it now being available on home computing platforms, anyone with any one of these computers could try it out. Previously, Erlang had been restricted to users in educational positions, which is a great place for a test bed, but not for a growing language. By the next year, 1993, distributed processing was added\cite{ERHIST}. This allowed users to run a uniform distribution of Erlang on a non-uniform computing cluster. Effectively, this would allow us to run a single program on many computers thus infinitely expanding the use of Erlang. Erlang had evolved to the point where the primary purpose of the language was now to be able to perform very intense concurrent distributed algorithm analysis.
  
-There have been many other milestones that have brought Erlang to where it is today. The first true release of Erlang to users took place in 1991.  This was after almost 10 years of development, once Erlang was fast enough to be considered usable.\cite{ERHIST} Only one year later, Erlang was ported to VxWorks, PC and Mac.\cite{ERHIST} This allowed many more users to take a look and expierement with Erlang. The increase of platforms was a huge point for Erlang, with it now being available on home computing platforms, anyone with any one of these computers could try it out.  Previously, Erlang had been restricted to users in educational vocations, which is a great place for a test bed, but not for a growing language. In an additional year, 1993, distribution was added.\cite{ERHIST} This allowed users to run a uniform distribution of Erlang on a non-uniform computing cluster.  Effectively, this would allow us to run a single program on many computers thus infinitely expanding the use of Erlang. Now it was not a toy, it was a real tool. The primary use of Erlang was now to be able to perform very intense concurrent distributed algorithm analysis.
+The primary use of Erlang was aimed at telephony applications, as its initial developer was Ericsson (one of Sweden's telecomm companies)\cite{ERWIK}. The name Erlang has actually been attributed to both the mathematician Agner Krarup Erlang as well as the contraction of the phrase \textbf{Er}icsson \textbf{lang}uage. With a commercial background, Erlang was destined to succeed; however, just because something had funding, did not guarantee success. Erlang, being designed for telecommunications use, made sure to provide low-level, lightweight threading.  Processes communicate solely by message-passing rather than using shared variables. Due to this nifty way of handling communications throughout multiple portions of code, there is no need for locking. Locks allow certain pieces of code to be held constant so no other threads can alter their state, and are required for most concurrency implementing languages\cite{LOWIK}. This way, Erlang can maintain thread safety while still creating an environment that allows refactoring to be done. It is important to note that while Erlang does focus a lot on threads and distribution, it is still considered a high level language, as it still supports almost every aspect of functional programming. 
  
-The primary use of Erlang was aimed at telephony applications, as it's initial developer was Ericsson (one of Sweden's telecomm companies).\cite(ERWIK) The name Erlang has actually been attributed to both the mathematician Agner Krarup Erlang and the abbreviation of the company who designed the language ERicsson along with LANGuage at the end. With a commercial background, Erlang was destined to succeed, however just because something had funding, did not guarantee success. Erlang, being designed for telecommunications use, made sure to provide low level, cheap threading.  Processes comunicate solely by message-passing rather than using shared variables. Due to this nifty way of handling communications throughout multiple portions of code, there is no need for locking. Locks allow certain pieces of code to be locked so nothing else can touch them, and are required for most concurrency implementing languages.\cite{LOWIK} This way, we can maintain thread safety while still creating an environment that allows refactoring to be done. It is important to note that while Erlang does focus a lot on threads and distribution, it is still considered a high level language, as it still supports almost every aspect of functional programming. 
+Erlang provides eight primitive data structures that developers can use. Of those, the two most unique to the language are Atoms and Ports. The other types, such as Integers, Floats, References and the like are very similar to their C equivalents. There are also two compound datatypes: Tuples and Lists.  These simple language attributes show that Erlang, as a whole, is a very lightweight language, and is not intended for everyday use.  On the other hand, this light weight of the language truly lends itself to being able to be run across many platforms simultaneously and definitely makes running multiple threads quite efficient. The Erlang language as a whole is very compact; however, this doesn't guarantee that Erlang code always follows the style of the language. This is why developers need the ability to refactor.
  
-Erlang provides eight primitive data structures that we can use, the two most uncommon being: Atoms and Ports. The other types, such as Integers, Floats, References and the like are very similar to their C equivalents. There are also two compound datatypes: Tuples and Lists.  These simple language attributes show that Erlang, as a whole, is a very lightweight language, and is not intended for everyday use.  On the other hand, this light weight of the language truly lends itself to being able to be run across many platforms simultaneously and definitely makes running multiple threads hyper efficient. The Erlang language as a whole is very compact, but code written in it isn't always, this is why we need to refactor.
- 
-\subsection*{Refactoring in Erlang}
+\subsection{Refactoring in Erlang}
  
 The refactoring process for Erlang is actually much more defined than one would expect, including an entire application being written solely for the purpose of refactoring Erlang. This piece of software supports 24 different refactoring steps which each have an important function.
  
-Erlang's syntax makes it espically difficult to refactor, which is why tools provide a great way to do it for you in the correct programming environments.  Let's take a look at some very basic refactoring examples and why the Erlang syntax makes it difficult.
+Erlang's syntax makes it especially difficult to refactor, which is why tools provide that functionality for developers in the correct programming environments.  Let's take a look at some very basic refactoring examples and why the Erlang syntax makes it difficult.
  
 \begin{verbatim}
 myFunction(false) ->
- doCoolStuff(),
- doMoreCoolStuff();
+  doCoolStuff(),
+  doMoreCoolStuff();
 myFunction(true) ->
- doCoolStuff().
+  doCoolStuff().
+\end{verbatim}
+
+Let's say we simply wanted to move one of these pieces of code from one branch to another. In a language like Java, we'd simply grab that line and move it; this isn't possible in Erlang. Due to the fact that a function's syntax effectively propagates throughout the entirety of the function, we have to do this:
+
+\begin{verbatim}
+myFunction(false) ->
+  doCoolStuff();
+myFunction(true) ->
+  doMoreCoolStuff(),
+  doCoolStuff().
 \end{verbatim}
  
-Let's say we simply wanted to move one of these pieces of code from one branch to another, in a language like Java, we'd siply grab that line and move it.  Not in Erlang.  Due to the nature that effectively a function's syntax propegates throuout the entirety of the function, we have to do this:
+Make note the ordering of the semicolon, comma, and period. This even makes it difficult if we simply want to change the order in which the two functions are called:
  
 \begin{verbatim}
 myFunction(false) ->
- doCoolStuff();
+  doCoolStuff();
 myFunction(true) ->
- doMoreCoolStuff(),
- doCoolStuff().
+  doCoolStuff(),
+  doMoreCoolStuff().
 \end{verbatim}
  
-Make note the ordering of the semocolon, comma and period.  This even makes it difficult if we simply want to change the order in which the two functions are called!
- 
+Now, one further operation on this bit of code: we must change the order in which operations happen depending on the argument given to the function.
+
 \begin{verbatim}
-myFunction(false) ->
- doCoolStuff();
 myFunction(true) ->
- doCoolStuff(),
- doMoreCoolStuff().
+  doCoolStuff(),
+  doMoreCoolStuff();
+myFunction(false) ->
+  doCoolStuff().
 \end{verbatim}
  
-Now, one further operation on this bit of code; change the order in which the operation that happens if true is passed or if false is: go.
- 
-\begin{verbatim}
- 
-myFunction(true) ->
- doCoolStuff(),
- doMoreCoolStuff();
-myFunction(false) ->
- doCoolStuff().
-\end{verbatim}
- 
-Wow, there it is, somehow, Erlang made such simple refactoring operations quite complex! Now let's do some refactoring with working code; we can start with a simple program that prints the items in a list.  This is a simple task to perform in any language, but can be a bit daunting in a functional language.
+Somehow, Erlang has made this simple refactoring operations quite complex! Now let's do some refactoring with working code; we can start with a simple program that prints the items in a list. This is a trivial task to perform in most languages, but can be a bit daunting in a functional language.
  
 \begin{verbatim}
 -module (example).
 -export([pl/1]).
 pl([H|T]) ->
-   io:format("˜p\n", [H]),
-   pl(T);
+  io:format("˜p\n", [H]),
+  pl(T);
 pl([]) -> true.
 \end{verbatim}
  
-This function, printTheList takes two parameters, H and T and prints them to the console.  H is the string variable format and T is the remainder of the list.  This function recursively calls itself.  In this refactoring example, one of the simplest refactoring techniques allows us to make this function much more readable by any person.  We will simply rename the H, T and function name to output, remainingList and printTheList, respectively.
+This function, \verb!pl! takes two parameters, \verb!H! and \verb!T!, and prints them to the console. \verb!H! is the string variable format and \verb!T! is the remainder of the list. This function recursively calls itself. In this refactoring example, one of the simplest refactoring techniques allows us to make this function much more readable.  We will simply rename the \verb!H!, \verb!T!, and function name to \verb!output!, \verb!remainingList! and \verb!printList!, respectively.
  
 \begin{verbatim}
 -module (example).
 -export([printTheList/1]).
 printTheList([output|remainingList]) ->
-   io:format("˜p\n", [output]),
-   printTheList(remainingList);
+  io:format("˜p\n", [output]),
+  printTheList(remainingList);
 printTheList([]) -> true.
 \end{verbatim}
  
-Now, the second anyone looks at this code, it is instantly obvious what it does, regardless of their language background!
+Now, the second anyone looks at this code, it is much more obvious what it does, regardless of language background.
    
-Basic refactoring techniques can be applied to any code in any language, and as Erlang is a high level functional language, many of the techniques that can be applied in Object Oriented programming, can be applied here as well!
+Basic refactoring techniques can be applied to any code in any language, and as Erlang is a high level functional language, many of the techniques that can be applied in object-oriented programming can be applied here as well. Consider the following snippet:
  
 \begin{verbatim}
-get_submatrices(Puzzle) -> 
- NSquared = length(Puzzle),
- N = trunc(math:sqrt(NSquared)),
- BinaryEncoded = 
-   [split_into_ns(list_to_binary(lists:map(fun remove_unk/1, Row)), N, []) || Row <- Puzzle],
- BinaryTrans = transpose(BinaryEncoded),
- [lists:map(fun add_unk/1, binary_to_list(BinBlock))
+getSubmatrices(Puzzle) -> 
+  NSquared = length(Puzzle),
+  N = trunc(math:sqrt(NSquared)),
+  BinaryEncoded = 
+    [split_into_ns(list_to_binary(lists:map(fun remove_unk/1, Row)), N, []) 
+     || Row <- Puzzle],
+  BinaryTrans = transpose(BinaryEncoded),
+  [lists:map(fun add_unk/1, binary_to_list(BinBlock))
    || BlockCol <- BinaryTrans, 
    BinBlock <- split_into_ns(list_to_binary(BlockCol), NSquared, [])].
 \end{verbatim}
  
-One of the big selling points of Erlang is its efficiency. It can be very fast. This comes with the same warning that C can be very fast, if you're not wasting memory or resources. One of the biggest places we loose memory when we're hyper-optimizing our code is in required variable assignments. This is the point where we have to step back and take a look at what we're really trying to refactor.  We definitely want more testible code, we definetly want fast code, and we also want readable code.  In this instance when we're valuing testability and speed over readability, in many cases these extra variable assignments are just extra fluff that we really don't need.  We can see there is one location above where we assign NSquared that I kept in the bottom block. This is again, for speed reasons.  Although it costs us memory to store this value, we're only computing it once, rather than twice in this small method snippit.
+One of the big selling points of Erlang is its efficiency. It can be very fast. This comes with a similar warning to low-level languages such as C: they can be very fast, if you're not wasting memory or resources. One of the biggest places we lose memory when we're hyper-optimizing our code is in required variable assignments. This is the point where we have to step back and take a look at what we're really trying to refactor. We definitely want more testable code, we definitely want fast code, and we also want readable code. In this instance when we're valuing testability and speed over readability, in many cases these extra variable assignments are just extra fluff that we really don't need. We can see there is one location above where we assign NSquared that we keep in the bottom block. This is again, for speed reasons.  Although it costs us memory to store this value, we're only computing it once, rather than twice in this small method snippet.
    
 \begin{verbatim}
-get_submatrices(Puzzle) -> 
+getSubmatrices(Puzzle) -> 
  NSquared = length(Puzzle),
  BinaryEncoded = 
    [split_into_ns(list_to_binary(lists:map(fun remove_unk/1, Row)),
@@ -124,9 +128,11 @@ get_submatrices(Puzzle) ->
 \end{verbatim}
     
  
-\subsection*{Conclusion}
+\subsection{Conclusion}
  
-Refactoring in Erlang has definetly proved to be a relatively difficult, but important beast.  When taking a look at when it is required to refactor, we need to look at what systems need to be refactored.  At the simplest level; every system can use some form of refactoring. This is because the art of refactoring can have different meanings in different contexts.  Refactoring can make code faster, smaller, more readable, more testable or even easier to package. One of the biggest problems or difficulties that comes with refactoring is the simple fact that many of these types of refactoring cannot take place with others being used.  It can be problematic to try and make code smaller, when we're making variable names longer.  Erlang suffers from these problems among the many others, primarily with it's syntax.  Erlang is very difficult to refactor due to the nature of how functions are written. It is also very important to refactor Erlang; a language used primarily for distributed concurrent telecommunications systems. No one ever wanted to have only one person talking on a telephone, which is why unrefactored Erlang code can result in one of the largest debugging nightmares on the planet. When we have the multiple variations of our code running over a distributed system, and a specific server cluster goes down, how do we know what went wrong? Well it is very certain that large chunks of code will surely lead to chaos. This chaos is not only that of debugging or multiple process, but especially if we had to deal with locks. If an alternative language had been chosen, we would have to deal with locking and unlocking resources on an enormous scale, hundreds of thousands of calls, hundreds of servers, billions of bytes of memory. Erlang was a language designed with distributed concurrency in mind, which is absolutely perfect for the telecommunications world.
+Refactoring in Erlang has definitely proved to be a relatively difficult, but important task. When taking a look at when it is required to refactor, we need to look at what systems need to be refactored. At the simplest level, every system can use some form of refactoring. This is because the art of refactoring can have different meanings in different contexts.  Refactoring can make code faster, smaller, more readable, more testable or even easier to package. One of the biggest problems or difficulties that comes with refactoring is the simple fact that many of these types of refactoring cannot take place with others being used. It can be problematic to try and make code smaller, when we're making variable names longer. Erlang suffers from these problems among the many others, primarily with it's syntax.
+
+Erlang is very difficult to refactor due to the nature of how functions are written. It is also very important to refactor Erlang, a language used primarily for distributed concurrent telecommunications systems. No one ever wanted to have only one person talking on a telephone, which is why unrefactored Erlang code can result in one of the largest debugging nightmares on the planet. When we have the multiple variations of our code running over a distributed system, and a specific server cluster goes down, how do we know what went wrong? It is quite certain that large chunks of code will lead to chaos. This chaos is not only that of debugging or multiple process, but especially if we had to deal with locks. If an alternative language had been chosen, we would have to deal with locking and unlocking resources on an enormous scale, with hundreds of thousands of calls, hundreds of servers, billions of bytes of memory. Erlang was a language designed with distributed concurrency in mind, which is absolutely perfect for the telecommunications world.
  
 \begin{thebibliography}{9}
 \bibitem{AR07} Armstrong, Joe. A History of Erlang. Tech. Print.
@@ -138,4 +144,3 @@ Refactoring in Erlang has definetly proved to be a relatively difficult, but imp
 \end{thebibliography}
  
 \end{document}
-?
