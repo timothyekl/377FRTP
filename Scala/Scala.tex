@@ -1,0 +1,133 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{array}
+\usepackage{mdwlist}
+\usepackage{wasysym}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+
+\pagestyle{fancy}
+\headheight 35pt
+\begin{document}
+
+\lhead{\textbf{CSSE377 \\ Functional Refactoring}}
+\rhead{November 2011 \\ Scala}
+
+\section{Scala}
+
+Scala is a multi-paradigm programming language designed to be a \verb!scalable language!, meaning that it grows with the demand of its users. It integrates features of both object-oriented and functional programming and runs on the Java platform (Java Virtual Machine).
+
+\subsection{Language Background}
+The name Scala is intended as portmanteau of scalable and language\cite{1}. The design of Scala started in 2001, at the ƒcole Polytechnique FŽdŽrale de Lausanne (EPFL) by a professor Martin Odersky. Odersky had previously worked on Generic Java and javac, Sun's Java compiler. He wanted to design a language that would combine functional programming and object-oriented programming without the restrictions imposed by Java. In his research of join calculus, he realized using it's foundation would be a great way to accomplish this task. Thus, a language named Funnel was born.
+
+Funnel was a programming language of a beautifully simple design, containing very few primitive language features. It combined the essential ideas of functional programming and Petri nets (a mathematical modeling language for the description of distributed systems)\cite{2}. This combination of ideas resulted in a very simple and expressive programming language.
+
+However, it turned out Funnel was not a very practical language and ended up being unpleasant to use. It was designed to be minimalistic, which appealed greatly to the designers but at the same time turned away many users. Beginning users didn't understand how to do the necessary encodings, and expert users of the language got tired of having to do them over and over again. The language also lacked a set of standard libraries, making its use even less appealing. After realizing the shortcomings of Funnel, Odersky set forth to create a new language called Scala\cite{3}.
+
+Scala's design began in 2001, and wasn't released until late 2003. It was specifically designed to be both functional and object-oriented. Data types and how objects behave are described by classes and traits. These classes can also be extended by subclassing and can be composed using mixin composition. At the same time, every function is a value that can be nested and operate on data using pattern matching. This provides support for anonymous functions and higher-order functions\cite{3}. Scala runs on the Java platform, making it compatible with existing Java programs. It even has the same compilation model as Java (and other languages depending on the version), enabling the user to call Java libraries. Those with a background in Java will find Scala's characteristics very familiar. Scala code can even be decompiled into readable Java code, with some exceptions. In the eyes of the Java Virtual Machine, Java and Scala code are the nearly the same; Scala has just one additional runtime library\cite{4}. This enables Java and other programmers to be more productive and to reducing their overall code size.
+
+Present day, many existing companies who use Java for their applications are turning to Scala to ``boost their development productivity, applications scalability and overall reliability''\cite{1}.
+Twitter, the social networking service, moved their core message queue from Ruby to Scala. The social networks popularity required a way to reliably scale their operation to meet fast growing rate of Tweets. 
+With the addition of the Scala code, Twitter was able to survive large bursts of traffic more easily, allowing incoming items to be processed and delivered to the user remarkably fast, removing a lot of the application's limitations. 
+
+\subsection{Refactoring in Scala}
+
+Refactoring is one of the most important techniques of agile development and has been widely accepted all over the world. Scala is subject to the usual set of refactoring techniques available to most object-oriented architectures. Outlined below is some popular techniques with their principles demonstrated in Scala code.
+
+\subsubsection{Exact Method}
+
+One of the most commonly used refactoring techniques available in Scala is Extract Method. The Exact Method lets you extract one or many expressions into a new private method. The refactoring takes care of passing all necessary parameters to the method and returns all values that are needed. Extract Method is a convenient technique because it makes code much more readable and easier to maintain. It also operates on a local scope, thereby avoiding dependency issues in some environments.
+
+In order to demonstrate this technique, Consider the following code:
+
+\begin{verbatim}
+val sb = new StringBuilder 
+val name = new BufferedReader(new InputStreamReader(System.in)).readLine 
+sb.append("Your name is: ")
+sb.append(name)
+\end{verbatim}
+
+This code is pretty simple and straightforward, however it can be extracted in order to increase the code's overall reusability. We can select a portion of the code and create a private method from it:
+
+\begin{verbatim}
+def askName(out: String => Any) { 
+	val name = new BufferedReader(new InputStreamReader(System.in)).readLine 
+	out("Your name is: ") 
+	out(name)
+}
+val sb = new StringBuilder askName(sb.append)
+\end{verbatim}
+
+This new method takes a function of type String -> Any called 'out' as it's parameter. Scala gives us the unique opportunity to pass an object's method as an argument instead of a function, as long as the signatures match. This can be seen with the last line of code involving the StringBuilder. This extracted method can now be used with any other function or method that satisfies the signature, greatly increasing its reusability.
+
+\subsection{Extract Local}
+
+Extract Local is a technique is accomplished by creating a new local variable from an expression; replacing the original expression with a reference to the new variable. This allows the user to simplify long expressions making the code much more readable. Also, by extracting new local variables we can debug a program much faster by printing out the immediate results of an expression. Consider this example:
+
+\begin{verbatim}
+object ExtractLocal {
+	def main(args: Array[String]) {
+		if(System.getProperties.get("os.name") == "Linux") {
+			println("We're on Linux!")
+		} else {
+			println("We're not on Linux!")
+		}
+	}
+}
+\end{verbatim}
+
+While this is not a badly written block of code, it could be improved. The Scala syntax and method names give us a good idea of what the intension of the expression is, but by extracting it and creating a new value we can make it much more readable:
+
+\begin{verbatim}
+object ExtractLocal {
+	def main(args: Array[String]) {
+		val isLinux = System.getProperties.get("os.name") == "Linux"
+		//println(val)
+		if(isLinux) {
+			println("We're on Linux!")
+		} else {
+			println("We're not on Linux!")
+		}
+	}
+}
+\end{verbatim}
+
+\subsection{Inline Local}
+
+Inline Local is a technique that enables the programmer to remove unneeded local values. By removing the value and replacing the references to the value with the value's content we can make the code run much more efficiently. Consider this example:
+
+\begin{verbatim}
+object InlineLocal {
+	def main(args: Array[String]) {
+		val x = "This is quite unnecessary."
+		println(x) 
+	}
+}
+\end{verbatim}
+
+By using the technique, we get:
+
+\begin{verbatim}
+object InlineLocal {
+	def main(args: Array[String]) {
+		println("This is quite unnecessary.") 
+	}
+}
+\end{verbatim}
+
+Local values can be included, but vars are not supported. This technique may be obvious and trivial to most experienced programmers, but it is still very important to use in order to keep the code readable and running efficiently.
+
+\subsection{Conclusion}
+
+Scala gives developers a tool to scale their applications based on its user base, ensuring its reliability and efficiency. Keeping code organized, efficient, and readable is required in order to give the users this assurance. Being a close relative of Java, most of the techniques used in refactoring are identical to those common to most object-oriented languages. Scala has a bright future ahead, and is seeing more publicity on a daily basis.
+
+\begin{thebibliography}{9}
+\bibitem{1} "Scala Offical FAQ." Scala Offical FAQ. Web. 1 Nov. 2010. \verb!<http://scala-lang.org/faq/1>!.
+\bibitem{2} Odersky, Martin. "Functional Nets." Functional Nets. Web. 1 Nov. 2010. \verb!<http://lamp.epfl.ch/funnel/esop2000.html>!.
+\bibitem{3} Odersky, Martin. "A Brief History of Scala." A Brief History of Scala. Web. 2 Nov. 2010. \verb!<http://www.artima.com/weblogs/viewpost.jsp?thread=163733>!.
+\bibitem{4} Pollak, David. "For all you know, it's just another Java library." For all you know, it's just another Java library. Web. 2 Nov. 2010. \verb!<http://blog.lostlake.org/index.php?/archives/73-For-all-you-know,-its-just-another-Java-library.html>!.
+\end{thebibliography}
+
+\end{document}
