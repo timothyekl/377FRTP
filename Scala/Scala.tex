@@ -17,10 +17,10 @@
 
 \section{Scala}
 
-Scala is a multi-paradigm programming language designed to be a \verb!scalable language!, meaning that it grows with the demand of its users. It integrates features of both object-oriented and functional programming and runs on the Java platform (Java Virtual Machine).
+Scala is a multi-paradigm programming language designed to be a ``scalable language,'' meaning that it grows with the demand of its users. It integrates features of both object-oriented and functional programming and runs on the Java platform (Java Virtual Machine).
 
 \subsection{Language Background}
-The name Scala is intended as portmanteau of scalable and language\cite{1}. The design of Scala started in 2001, at the ƒcole Polytechnique FŽdŽrale de Lausanne (EPFL) by a professor Martin Odersky. Odersky had previously worked on Generic Java and javac, Sun's Java compiler. He wanted to design a language that would combine functional programming and object-oriented programming without the restrictions imposed by Java. In his research of join calculus, he realized using it's foundation would be a great way to accomplish this task. Thus, a language named Funnel was born.
+The name Scala is intended as portmanteau of scalable and language\cite{1}. The design of Scala started in 2001, at the ƒcole Polytechnique FŽdŽrale de Lausanne (EPFL) by a professor Martin Odersky. Odersky had previously worked on Java generics and \verb!javac!, Sun's Java compiler. He wanted to design a language that would combine functional programming and object-oriented programming without the restrictions imposed by Java. In his research of join calculus, he realized using its foundation would be a great way to accomplish this task. Thus, a language named Funnel was born.
 
 Funnel was a programming language of a beautifully simple design, containing very few primitive language features. It combined the essential ideas of functional programming and Petri nets (a mathematical modeling language for the description of distributed systems)\cite{2}. This combination of ideas resulted in a very simple and expressive programming language.
 
@@ -34,13 +34,13 @@ With the addition of the Scala code, Twitter was able to survive large bursts of
 
 \subsection{Refactoring in Scala}
 
-Refactoring is one of the most important techniques of agile development and has been widely accepted all over the world. Scala is subject to the usual set of refactoring techniques available to most object-oriented architectures. Outlined below is some popular techniques with their principles demonstrated in Scala code.
+Refactoring is one of the most important techniques of agile development and has been widely accepted all over the world. Scala is subject to the usual set of refactoring techniques available to most object-oriented architectures. Outlined below are some popular techniques with their principles demonstrated in Scala code.
 
-\subsubsection{Exact Method}
+\subsubsection{Extract Method}
 
-One of the most commonly used refactoring techniques available in Scala is Extract Method. The Exact Method lets you extract one or many expressions into a new private method. The refactoring takes care of passing all necessary parameters to the method and returns all values that are needed. Extract Method is a convenient technique because it makes code much more readable and easier to maintain. It also operates on a local scope, thereby avoiding dependency issues in some environments.
+One of the most commonly used refactoring techniques available in Scala is Extract Method. This technique lets you extract one or many expressions into a new private method. The refactoring takes care of passing all necessary parameters to the method and returns all values that are needed. Extract Method is a convenient technique because it makes code much more readable and easier to maintain. It also operates on a local scope, thereby avoiding dependency issues in some environments.
 
-In order to demonstrate this technique, Consider the following code:
+In order to demonstrate this technique, consider the following code:
 
 \begin{verbatim}
 val sb = new StringBuilder 
@@ -60,7 +60,7 @@ def askName(out: String => Any) {
 val sb = new StringBuilder askName(sb.append)
 \end{verbatim}
 
-This new method takes a function of type String -> Any called 'out' as it's parameter. Scala gives us the unique opportunity to pass an object's method as an argument instead of a function, as long as the signatures match. This can be seen with the last line of code involving the StringBuilder. This extracted method can now be used with any other function or method that satisfies the signature, greatly increasing its reusability.
+This new method takes a function of type \verb!String -> Any! called `out' as it's parameter. Scala gives us the unique opportunity to pass an object's method as an argument instead of a function, as long as the signatures match. This can be seen with the last line of code involving the StringBuilder. This extracted method can now be used with any other function or method that satisfies the signature, greatly increasing its reusability.
 
 \subsection{Extract Local}
 
@@ -68,13 +68,13 @@ Extract Local is a technique is accomplished by creating a new local variable fr
 
 \begin{verbatim}
 object ExtractLocal {
-	def main(args: Array[String]) {
-		if(System.getProperties.get("os.name") == "Linux") {
-			println("We're on Linux!")
-		} else {
-			println("We're not on Linux!")
-		}
-	}
+  def main(args: Array[String]) {
+    if(System.getProperties.get("os.name") == "Linux") {
+      println("We're on Linux!")
+    } else {
+      println("We're not on Linux!")
+    }
+  }
 }
 \end{verbatim}
 
@@ -82,28 +82,27 @@ While this is not a badly written block of code, it could be improved. The Scala
 
 \begin{verbatim}
 object ExtractLocal {
-	def main(args: Array[String]) {
-		val isLinux = System.getProperties.get("os.name") == "Linux"
-		//println(val)
-		if(isLinux) {
-			println("We're on Linux!")
-		} else {
-			println("We're not on Linux!")
-		}
-	}
+  def main(args: Array[String]) {
+    val isLinux = System.getProperties.get("os.name") == "Linux"
+    if(isLinux) {
+      println("We're on Linux!")
+    } else {
+      println("We're not on Linux!")
+    }
+  }
 }
 \end{verbatim}
 
 \subsection{Inline Local}
 
-Inline Local is a technique that enables the programmer to remove unneeded local values. By removing the value and replacing the references to the value with the value's content we can make the code run much more efficiently. Consider this example:
+Inline Local is a technique that enables the programmer to remove unneeded local values. By removing the value and replacing the references to the value with the value's content, we can make the code run much more efficiently. Consider this example:
 
 \begin{verbatim}
 object InlineLocal {
-	def main(args: Array[String]) {
-		val x = "This is quite unnecessary."
-		println(x) 
-	}
+  def main(args: Array[String]) {
+    val x = "This is quite unnecessary."
+    println(x) 
+  }
 }
 \end{verbatim}
 
@@ -111,9 +110,9 @@ By using the technique, we get:
 
 \begin{verbatim}
 object InlineLocal {
-	def main(args: Array[String]) {
-		println("This is quite unnecessary.") 
-	}
+  def main(args: Array[String]) {
+    println("This is quite unnecessary.") 
+  }
 }
 \end{verbatim}
 
@@ -124,10 +123,10 @@ Local values can be included, but vars are not supported. This technique may be 
 Scala gives developers a tool to scale their applications based on its user base, ensuring its reliability and efficiency. Keeping code organized, efficient, and readable is required in order to give the users this assurance. Being a close relative of Java, most of the techniques used in refactoring are identical to those common to most object-oriented languages. Scala has a bright future ahead, and is seeing more publicity on a daily basis.
 
 \begin{thebibliography}{9}
-\bibitem{1} "Scala Offical FAQ." Scala Offical FAQ. Web. 1 Nov. 2010. \verb!<http://scala-lang.org/faq/1>!.
-\bibitem{2} Odersky, Martin. "Functional Nets." Functional Nets. Web. 1 Nov. 2010. \verb!<http://lamp.epfl.ch/funnel/esop2000.html>!.
-\bibitem{3} Odersky, Martin. "A Brief History of Scala." A Brief History of Scala. Web. 2 Nov. 2010. \verb!<http://www.artima.com/weblogs/viewpost.jsp?thread=163733>!.
-\bibitem{4} Pollak, David. "For all you know, it's just another Java library." For all you know, it's just another Java library. Web. 2 Nov. 2010. \verb!<http://blog.lostlake.org/index.php?/archives/73-For-all-you-know,-its-just-another-Java-library.html>!.
+\bibitem{1} ``Scala Offical FAQ.'' Scala Offical FAQ. Web. 1 Nov. 2010. \verb!<http://scala-lang.org/faq/1>!.
+\bibitem{2} Odersky, Martin. ``Functional Nets.'' Functional Nets. Web. 1 Nov. 2010. \verb!<http://lamp.epfl.ch/funnel/esop2000.html>!.
+\bibitem{3} Odersky, Martin. ``A Brief History of Scala.'' A Brief History of Scala. Web. 2 Nov. 2010. \verb!<http://www.artima.com/weblogs/viewpost.jsp?thread=163733>!.
+\bibitem{4} Pollak, David. ``For all you know, it's just another Java library.'' For all you know, it's just another Java library. Web. 2 Nov. 2010. \verb!<http://blog.lostlake.org/index.php?/archives/73-For-all-you-know,-its-just-another-Java-library.html>!.
 \end{thebibliography}
 
 \end{document}
