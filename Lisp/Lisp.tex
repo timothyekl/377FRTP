@@ -1,27 +1,10 @@
-\documentclass{article}
-
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{array}
-\usepackage{mdwlist}
-\usepackage{wasysym}
-\usepackage{fancyhdr}
-\usepackage{graphicx}
-
-\pagestyle{fancy}
-\headheight 35pt
-\begin{document}
-
-\lhead{\textbf{CSSE377 \\ Functional Refactoring}}
-\rhead{November 2011 \\ Lisp}
-
 \section{Lisp}
 
 \subsection{Language Background}
 
-Originally created in 1958, Lisp is the second oldest high-level programming language still in use today. The name Lisp comes from ``list processing'' as linked-lists are one of the most important data structures in the language, along with the fact that the entire source code for the language is made up of lists. Since List source code is made up of lists, the language allows a developer to manipulate source code as a data structure. This lead to the creation of macro systems which allow programmers to create new syntax, and domain-specific languages based on the original Lisp language\cite{1}.
+Originally created in 1958, Lisp is the second oldest high-level programming language still in use today. The name Lisp comes from ``list processing'' as linked-lists are one of the most important data structures in the language, along with the fact that the entire source code for the language is made up of lists. Since List source code is made up of lists, the language allows a developer to manipulate source code as a data structure. This lead to the creation of macro systems which allow programmers to create new syntax, and domain-specific languages based on the original Lisp language\cite{evolutionoflisp}.
 
-A domain-specific language is one that is based on a language such as Lisp, but provides an extended syntax for handling a specific problem domain. For instance, if someone were to modify the original list language with specific functions for creating web applications, they would have created a domain-specific language\cite{4}.
+A domain-specific language is one that is based on a language such as Lisp, but provides an extended syntax for handling a specific problem domain. For instance, if someone were to modify the original list language with specific functions for creating web applications, they would have created a domain-specific language\cite{domainspecific}.
 
 Lisp and languages based on it can easily be recognized by their extreme use of parenthesis as well as the S-expressions that are used to write in the language. An S-expression or symbolic-expression (commonly referred to as \textit{sexps}) are list-based data structures, used to represent semi-structured data. A simple example of a sexp would be \verb!(+ 2 2)!. This sexp highlights Lisp prefix notation, where unlike most other languages operators come first in the sexp while everything else is treated as data. The combination of prefix-notation and sexps makes Lisp extremely easy to parse and led to the creation of two extremely well known functions: \verb!car! and \verb!cdr!. \verb!car! returns the first part of an sexp, while \verb!cdr! will return the data portion of the sexp.
 
@@ -50,7 +33,7 @@ This function is a good example of one that is trying to do too much. By calling
 
 \subsubsection{Rename Function / Variable}
 
-The first refactoring technique introduced in this section was the idea of short functions. However, in order for short functions to work properly as a refactoring technique, all functions and variables must be named in a clear manner that gives the developer an idea of their purpose. Functions need to be named in such a way that communicates their intention. A good way to do this is to think of what a comment would be for a function and try and incorporate that into the name of the function. This is an extremely important technique that can take some time to master. While attempting to understand this technique, a developer should not be happy with their first attempt at naming a function. If it is clear that a function will end up preforming a different function from when it was named, simply change the name. The developer must remember that the code they are writing is meant for humans to read, and the best way to make their code understanding is through well named functions and variables\cite{2}. 
+The first refactoring technique introduced in this section was the idea of short functions. However, in order for short functions to work properly as a refactoring technique, all functions and variables must be named in a clear manner that gives the developer an idea of their purpose. Functions need to be named in such a way that communicates their intention. A good way to do this is to think of what a comment would be for a function and try and incorporate that into the name of the function. This is an extremely important technique that can take some time to master. While attempting to understand this technique, a developer should not be happy with their first attempt at naming a function. If it is clear that a function will end up preforming a different function from when it was named, simply change the name. The developer must remember that the code they are writing is meant for humans to read, and the best way to make their code understanding is through well named functions and variables\cite{lisprefactoring}. 
 
 A simple example of this would be the following function:
 
@@ -61,7 +44,7 @@ A simple example of this would be the following function:
     return-value))
 \end{verbatim}
 
-While after reading the code for this function, it may be apparent that it reverses a list, reading a call to this function from another one would not make that fact obvious. This means that as a developer is reading a function which calls this one, they will be forced to read the code for this function to understand the one they are currently looking at. This will tend to break their train of thought and force them to spend a significant amount of extra time reading code that could have been avoided through a function name that made sense\cite{2}.
+While after reading the code for this function, it may be apparent that it reverses a list, reading a call to this function from another one would not make that fact obvious. This means that as a developer is reading a function which calls this one, they will be forced to read the code for this function to understand the one they are currently looking at. This will tend to break their train of thought and force them to spend a significant amount of extra time reading code that could have been avoided through a function name that made sense\cite{lisprefactoring}.
 
 \begin{verbatim}
 (defun reverse-list (list)
@@ -145,7 +128,7 @@ The refactored code here is much clearer and the magic numbers are defined in th
  
 \subsubsection{Tests}
  
-While these refactoring techniques are very useful when applied correctly, they are only as good as the tests that go along with them. When you refactor code the developer is essentially rewriting there code. In order to be sure that each time a change is made the functionality does not also change, a good suite of tests are required\cite{2}. 
+While these refactoring techniques are very useful when applied correctly, they are only as good as the tests that go along with them. When you refactor code the developer is essentially rewriting there code. In order to be sure that each time a change is made the functionality does not also change, a good suite of tests are required\cite{lisprefactoring}. 
  
 Although tests cannot prove that a method works correctly, it would be extremely difficult to write a unit test for every possible input to a function. They can give a reasonable assurance that a function preforms in the intended manor. 
  
@@ -166,12 +149,3 @@ A suite of tests similar to this one provides the programmer an easy way of ensu
 While refactoring is important to any language, it is especially important in Lisp. This is true, because of Lisp’s cluttered syntax. Often times when writing code in Lisp, a developer will have difficulty understanding it after working on another function for a period of time. This means that making code more readable, maintainable, and understandable of the utmost importance. In order to ensure the quality of a developers code while writing in Lisp, they must be constantly looking for ways to refactor their code. This will help ensure that future developers have an easier time understanding code that has already been writing, and are better able to incorporate already written functions into their own code.
  
 Through these examples we have seen just how much of a difference specific refactorings can make to overall code quality. While these techniques can be applied in many places in all kinds of code, a developer should always be on the lookout for places where they can make their code better. The examples shown in this paper are by no means the only ways code can be refactored, and developers need to be constantly looking for new patterns which can be applied to their code.
-
-\begin{thebibliography}{9}
-\bibitem{1} Steele, Guy. "The Evolution of Lisp".
-\bibitem{2} Refactoring \verb!<http://www.b9.com/blog/archives/000036.html>!.
-\bibitem{3} McCarthy, John "LISP prehistory - Summer 1956 through Summer 1958" \verb!<http://www-formal.stanford.edu/jmc/history/lisp/node2.html>!.
-\bibitem{4} When and How to Develop A Domain Specific Language \verb!<http://portal.acm.org/citation.cfm?doid=1118890.1118892>!.
-\end{thebibliography}
-
-\end{document}

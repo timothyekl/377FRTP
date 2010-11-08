@@ -1,27 +1,3 @@
-\documentclass{article}
-
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{array}
-\usepackage{mdwlist}
-\usepackage{wasysym}
-\usepackage{fancyhdr}
-\usepackage{graphicx}
-
-\usepackage{fancyvrb}
-\usepackage{cite}
-\usepackage{color}
-\usepackage[colorlinks,backref]{hyperref}
-
-\input{StyleDefs.tex}
-
-\pagestyle{fancy}
-\headheight 35pt
-\begin{document}
-
-\lhead{\textbf{CSSE377 \\ Functional Refactoring}}
-\rhead{November 2011 \\ Haskell}
-
 \section{Haskell}
 
 Haskell is a purely functional language known for its laziness and powerful static type system that has served as an academic testbed for twenty years.
@@ -229,9 +205,3 @@ Refactoring in Haskell is a fairly young practice, as projects large enough to c
 The only tool available to assist is HaRe, the Haskell Refactorer\cite{li2006refactoring}, a product of research at the University of Kent.
 It includes support for the refactorings described above, as well as several others.
 The purely functional nature of the language tends to limit the complexity of refactorings, which are typically fairly simple mechanical transformations when dealing with functions, but can be more complex when manipulating types.
-
-
-\bibliography{HaskellBibliography}
-\bibliographystyle{plain}
-
-\end{document}

@@ -8,12 +8,17 @@
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 
+\usepackage{fancyvrb}
+\usepackage{cite}
+\usepackage{color}
+\usepackage[colorlinks,backref]{hyperref}
+
 \pagestyle{fancy}
 \headheight 35pt
 \begin{document}
 
 \lhead{\textbf{CSSE377}}
-\rhead{Functional Refactoring \\ 2010.11.08}
+\rhead{Functional Refactoring \\ November 2010}
 
 \vspace*{60mm}
 \begin{center}
@@ -37,40 +42,27 @@ This paper provides a brief insight into the state of refactoring in five differ
 
 \section{History}
 
-The concept of functional languages began with the development of lambda calculus, a mathematical concept used to encapsulate certain ideas about computation. The vast majority of functional languages today are based on ideas derived from lambda calculus \cite{Cu58}.
+The concept of functional languages began with the development of lambda calculus, a mathematical concept used to encapsulate certain ideas about computation. The vast majority of functional languages today are based on ideas derived from lambda calculus \cite{combinatorylogic}.
 
-The first true functional language was Lisp, developed in the late 1950s for IBM scientific computers at MIT. Lisp introduced many concepts common to functional languages now, and spawned a number of dialects, including Common Lisp and Scheme \cite{Mc78}. Over the next few decades, a small number of prevalent functional languages were introduced, including APL and ML. The early 1990s saw a large increase in the number of functional languages available with the advent of J and K, as well as the beginning of the standardization process for Haskell.
+The first true functional language was Lisp, developed in the late 1950s for IBM scientific computers at MIT. Lisp introduced many concepts common to functional languages now, and spawned a number of dialects, including Common Lisp and Scheme \cite{historyoflisp}. Over the next few decades, a small number of prevalent functional languages were introduced, including APL and ML. The early 1990s saw a large increase in the number of functional languages available with the advent of J and K, as well as the beginning of the standardization process for Haskell.
 
 Today, functional languages remain somewhat of a specialty: of the top 20 programming languages in use today, the only functional language to hold a spot is Lisp at \#13, with just over 1\% of existing worldwide production code. However, Scheme, Haskell, ML, APL, and Scala all appear in the top 50 programming languages, and most of these are gaining in popularity \cite{TIOBE}.
 
-\section{Clojure}
+\input{Clojure/Clojure.tex}
 
-Tim's paper
+\input{Erlang/Erlang.tex}
 
-\section{Erlang}
+\input{Haskell/Haskell.tex}
 
-Stokes's paper
+\input{Lisp/Lisp.tex}
 
-\section{Haskell}
-
-Tom's paper
-
-\section{Scala}
-
-Pete's paper
-
-\section{Scheme}
-
-David's paper
+\input{Scala/Scala.tex}
 
 \section{Conclusion}
 
 To be written
 
-\begin{thebibliography}{9}
-\bibitem{Cu58} Curry, Haskell Brooks; Robert Feys and Craig, William (1958). Combinatory Logic. Volume I. Amsterdam: North-Holland Publishing Company.
-\bibitem{Mc78} McCarthy, John (June 1978). "History of Lisp". In ACM SIGPLAN History of Programming Languages Conference: 173Ð196. doi:10.1145/800025.808387. ``The implementation of LISP began in Fall 1958.''
-\bibitem{TIOBE} ``TIOBE Programming Community Index for October 2010.'' TIOBE Index. TIOBE Software BV, Oct. 2010. Web. 24 Oct. 2010. \verb!<http://www.tiobe.com/index.php/content/paperinfo/tpci/index.html>!.
-\end{thebibliography}
+\bibliography{Bibliography}
+\bibliographystyle{plain}
 
 \end{document}

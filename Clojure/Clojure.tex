@@ -1,20 +1,3 @@
-\documentclass{article}
-
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{array}
-\usepackage{mdwlist}
-\usepackage{wasysym}
-\usepackage{fancyhdr}
-\usepackage{graphicx}
-
-\pagestyle{fancy}
-\headheight 35pt
-\begin{document}
-
-\lhead{\textbf{CSSE377 \\ Functional Refactoring}}
-\rhead{November 2011 \\ Clojure}
-
 \section{Clojure}
 
 Clojure is a dialect of Lisp, developed as a functional companion to Java that targets existing Java Virtual Machines (JVMs) and is therefore compatible with preexisting Java projects. 
@@ -30,13 +13,13 @@ Clojure first appeared in 2007 as a personal project of Rich Hickey, who explain
 \item was designed for concurrency
 \end{itemize*}
 
-No such language existed to Hickey's satisfaction, and thus Clojure was born. Since inception, Clojure has rapidly expanded to become a complete Lisp dialect, unconstrained by what Hickey calls the ``slow innovation''\cite{1} of both Common Lisp and Scheme since their respective standardizations. Since Clojure is not restricted by the scope of those dialects' standards, it can become a more flexible language, so long as it adheres to the JVM specification in compilation.
+No such language existed to Hickey's satisfaction, and thus Clojure was born. Since inception, Clojure has rapidly expanded to become a complete Lisp dialect, unconstrained by what Hickey calls the ``slow innovation''\cite{clojurerationale} of both Common Lisp and Scheme since their respective standardizations. Since Clojure is not restricted by the scope of those dialects' standards, it can become a more flexible language, so long as it adheres to the JVM specification in compilation.
 
 Clojure is a compiled language. Once written, Clojure code is converted to JVM bytecode that can be natively interpreted by any JVM, including the Sun standard virtual machines. As compiled, it supports the complete Java specification, including type hinting and inference; it avoids reflection where possible.
 
 Furthermore, as a Lisp dialect, Clojure is highly functional. It contains a lambda calculus core, and extends the paradigm of ``code as data'' to Java maps and vectors. All data types implemented in Clojure are immutable and persistent, making both recursion and concurrency easy and reliable.
 
-Finally, Clojure adheres to Java's polymorphic behavior, providing the ability to subclass and abstract certain parts of written code. It does not provide its own class system, instead preferring to provide many methods that operate on a relatively small number of classes and objects. Hickey asserts that ``inheritance is \textit{not} the only way to do polymorphism''\cite{1}, and attempts to get away from the object-oriented paradigm while still embracing the underlying Java platform.
+Finally, Clojure adheres to Java's polymorphic behavior, providing the ability to subclass and abstract certain parts of written code. It does not provide its own class system, instead preferring to provide many methods that operate on a relatively small number of classes and objects. Hickey asserts that ``inheritance is \textit{not} the only way to do polymorphism''\cite{clojurerationale}, and attempts to get away from the object-oriented paradigm while still embracing the underlying Java platform.
 
 \subsection{Refactoring in Clojure}
 
@@ -46,7 +29,7 @@ Note: throughout the remainder of this section, code blocks may contain comments
 
 \subsubsection{Rename Variable}
 
-One of the simplest refactoring techniques available in Clojure is a simple rename. While relatively trivial to do, this is also a fairly powerful technique - Hickey has gone so far as to call it ``the number one refactoring''\cite{2}. The simplicity of the technique comes from the static typing of names within any program. For example, when attempting to refactor a variable \verb!bar! within the \verb!foo! namespace (written as \verb!foo/bar!), it is trivial for a good IDE or compiler to determine what instances of \verb!bar! are syntactically equivalent to the target \verb!bar! by checking the variables' scope and namespaces. Hence, given the Clojure snippet:
+One of the simplest refactoring techniques available in Clojure is a simple rename. While relatively trivial to do, this is also a fairly powerful technique - Hickey has gone so far as to call it ``the number one refactoring''\cite{rerefactoring}. The simplicity of the technique comes from the static typing of names within any program. For example, when attempting to refactor a variable \verb!bar! within the \verb!foo! namespace (written as \verb!foo/bar!), it is trivial for a good IDE or compiler to determine what instances of \verb!bar! are syntactically equivalent to the target \verb!bar! by checking the variables' scope and namespaces. Hence, given the Clojure snippet:
 
 \begin{verbatim}
 (def bar 1)
@@ -78,7 +61,7 @@ Renaming the inner variable \verb!bar! would resolve to the local instance defin
 \end{verbatim}
 \end{tabular}
 
-The advantage of this refactoring technique lies primarily in its potential to enhance code readability and maintainability - a developer who can make sense of variable naming schemes and understanding the meaning underlying a piece of code is much more likely to be productive and make workable changes than one who has no idea what's going on in a code snippet. Furthermore, this technique is especially powerful because of the simplicity of its application - a sufficiently ``intelligent'' editing environment can easily handle this sort of change, and in fact several projects exist on GitHub that handle precisely this refactoring (most notably \verb!clojure-refactoring! by Tom Crayford \cite{3}).
+The advantage of this refactoring technique lies primarily in its potential to enhance code readability and maintainability - a developer who can make sense of variable naming schemes and understanding the meaning underlying a piece of code is much more likely to be productive and make workable changes than one who has no idea what's going on in a code snippet. Furthermore, this technique is especially powerful because of the simplicity of its application - a sufficiently ``intelligent'' editing environment can easily handle this sort of change, and in fact several projects exist on GitHub that handle precisely this refactoring (most notably \verb!clojure-refactoring! by Tom Crayford \cite{clojurerefactoring}).
 
 \subsubsection{Extract Expression}
 
@@ -182,11 +165,3 @@ While very compartmentalized and almost painfully obvious as to the purpose of i
 \subsection{Conclusion}
 
 Clojure occupies an interesting space in the field of programming languages as one that is undeniably functional, but at the same time integrates with the very heavily object-oriented Java. As such, its refactoring techniques comprise a number of common methods from known OO refactoring strategies, while also introducing some new ideas that are much more functional (and even mathematical at times). Notably, the more object-oriented refactorings available tend to be simpler - renaming variables, extracting functions, and so forth - while the more functional strategies reach much greater complexities (e.g. flattening a \verb!reduce! across a nested data structure).
-
-\begin{thebibliography}{9}
-\bibitem{1} Hickey, Richard. "Clojure: Rationale." Clojure - Rationale. Web. 28 Oct. 2010. \verb!<http://clojure.org/rationale>!.
-\bibitem{2} Hickey, Richard. "Re: Refactoring? - Richard Hickey - com.googlegroups.clojure - MarkMail." Mailing List. com.googlegroups.clojure. Google Groups, 23 July 2008. Web. 31 Oct. 2010. \verb!<http://markmail.org/message/btbnpxvuyob5xrig>!.
-\bibitem{3} Crayford, Tom. tcrayford's Clojure-refactoring at Master - GitHub. Clojure-refactoring. 23 Jan. 2010. Web. 31 Oct. 2010. \verb!<http://github.com/tcrayford/clojure-refactoring>!.
-\end{thebibliography}
-
-\end{document}
