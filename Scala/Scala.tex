@@ -45,7 +45,7 @@ val sb = new StringBuilder askName(sb.append)
 
 This new method takes a function of type \verb!String -> Any! called `out' as it's parameter. Scala gives us the unique opportunity to pass an object's method as an argument instead of a function, as long as the signatures match. This can be seen with the last line of code involving the StringBuilder. This extracted method can now be used with any other function or method that satisfies the signature, greatly increasing its reusability.
 
-\subsection{Extract Local}
+\subsubsection{Extract Local}
 
 Extract Local is a technique is accomplished by creating a new local variable from an expression; replacing the original expression with a reference to the new variable. This allows the user to simplify long expressions making the code much more readable. Also, by extracting new local variables we can debug a program much faster by printing out the immediate results of an expression. Consider this example:
 
@@ -76,7 +76,7 @@ object ExtractLocal {
 }
 \end{verbatim}
 
-\subsection{Inline Local}
+\subsubsection{Inline Local}
 
 Inline Local is a technique that enables the programmer to remove unneeded local values. By removing the value and replacing the references to the value with the value's content, we can make the code run much more efficiently. Consider this example:
 

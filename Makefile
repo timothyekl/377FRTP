@@ -3,7 +3,7 @@ TEXFLAGS := -halt-on-error -file-line-error -src-specials -interaction=nonstopmo
 
 default: FunctionalRefactoring.pdf
 
-%.pdf: %.tex
+%.pdf: %.tex FORCE
 	pdflatex $(TEXFLAGS) $<
 	bibtex $(<:.tex=)
 	pdflatex $(TEXFLAGS) $<
@@ -15,6 +15,8 @@ default: FunctionalRefactoring.pdf
 
 %.pdf: %.svg
 	inkscape --export-pdf=$@ $<
+
+FORCE:
 
 clean:
 	rm -f FunctionalRefactoring.pdf

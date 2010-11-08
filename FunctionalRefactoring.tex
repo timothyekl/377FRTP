@@ -60,7 +60,13 @@ Today, functional languages remain somewhat of a specialty: of the top 20 progra
 
 \section{Conclusion}
 
-To be written
+Modern functional languages span a wide number of applications and implementation concepts, ranging from the mostly object-oriented to the highly mathematical. As such, the set of refactoring techniques in existence for functional languages varies as well. However, there are a few patterns that can be drawn from the languages discussed above.
+
+Most evident is the concept that languages which approximate object-oriented behavior can be refactored with object-oriented techniques. Languages which provide classes (or an equivalent such as packages) can obviously have methods moved between classes, and so forth. In a similar vein, trivial object-oriented refactoring techniques (e.g. ``extract method'', ``rename variable'') remain in play in functional languages due to the continued existence of methods and variables.
+
+Another prevailing trend is the similarity of some functional refactoring techniques to known mathematical practices. For example, consider the Clojure technique of composing methods: function composition is a common practice in the mathematical world, and currying -- an analogous concept in generic programming -- is taught regularly in computer science courses, primarily as a mathematical exercise. Techniques related to type inference (in languages with support for it) also fall roughly into this category.
+
+Overall, the field of refactoring in the context of functional languages is fairly well developed. While not as ingrained into developers' consciousnesses as the object-oriented equivalent, refactoring techniques in functional languages are widely available, and can serve to improve the quality of code in almost any language.
 
 \bibliography{Bibliography}
 \bibliographystyle{plain}
