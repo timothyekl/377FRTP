@@ -18,71 +18,71 @@ The refactoring process for Erlang is actually much more defined than one would 
  
 Erlang's syntax makes it especially difficult to refactor, which is why tools provide that functionality for developers in the correct programming environments.  Let's take a look at some very basic refactoring examples and why the Erlang syntax makes it difficult.
  
-\begin{verbatim}
+\begin{minted}{erlang}
 myFunction(false) ->
   doCoolStuff(),
   doMoreCoolStuff();
 myFunction(true) ->
   doCoolStuff().
-\end{verbatim}
+\end{minted}
 
 Let's say we simply wanted to move one of these pieces of code from one branch to another. In a language like Java, we'd simply grab that line and move it; this isn't possible in Erlang. Due to the fact that a function's syntax effectively propagates throughout the entirety of the function, we have to do this:
 
-\begin{verbatim}
+\begin{minted}{erlang}
 myFunction(false) ->
   doCoolStuff();
 myFunction(true) ->
   doMoreCoolStuff(),
   doCoolStuff().
-\end{verbatim}
+\end{minted}
  
 Make note the ordering of the semicolon, comma, and period. This even makes it difficult if we simply want to change the order in which the two functions are called:
  
-\begin{verbatim}
+\begin{minted}{erlang}
 myFunction(false) ->
   doCoolStuff();
 myFunction(true) ->
   doCoolStuff(),
   doMoreCoolStuff().
-\end{verbatim}
+\end{minted}
  
 Now, one further operation on this bit of code: we must change the order in which operations happen depending on the argument given to the function.
 
-\begin{verbatim}
+\begin{minted}{erlang}
 myFunction(true) ->
   doCoolStuff(),
   doMoreCoolStuff();
 myFunction(false) ->
   doCoolStuff().
-\end{verbatim}
+\end{minted}
  
 Somehow, Erlang has made this simple refactoring operations quite complex! Now let's do some refactoring with working code; we can start with a simple program that prints the items in a list. This is a trivial task to perform in most languages, but can be a bit daunting in a functional language.
  
-\begin{verbatim}
+\begin{minted}{erlang}
 -module (example).
 -export([pl/1]).
 pl([H|T]) ->
   io:format("˜p\n", [H]),
   pl(T);
 pl([]) -> true.
-\end{verbatim}
+\end{minted}
  
 This function, \verb!pl! takes two parameters, \verb!H! and \verb!T!, and prints them to the console. \verb!H! is the string variable format and \verb!T! is the remainder of the list. This function recursively calls itself. In this refactoring example, one of the simplest refactoring techniques allows us to make this function much more readable.  We will simply rename the \verb!H!, \verb!T!, and function name to \verb!output!, \verb!remainingList! and \verb!printList!, respectively.
  
-\begin{verbatim}
+\begin{minted}{erlang}
 -module (example).
 -export([printTheList/1]).
 printTheList([output|remainingList]) ->
   io:format("˜p\n", [output]),
   printTheList(remainingList);
 printTheList([]) -> true.
-\end{verbatim}
+\end{minted}
  
 Now, the second anyone looks at this code, it is much more obvious what it does, regardless of language background.
    
 Basic refactoring techniques can be applied to any code in any language, and as Erlang is a high level functional language, many of the techniques that can be applied in object-oriented programming can be applied here as well. Consider the following snippet:
  
-\begin{verbatim}
+\begin{minted}{erlang}
 getSubmatrices(Puzzle) -> 
   NSquared = length(Puzzle),
   N = trunc(math:sqrt(NSquared)),
@@ -93,11 +93,11 @@ getSubmatrices(Puzzle) ->
   [lists:map(fun add_unk/1, binary_to_list(BinBlock))
    || BlockCol <- BinaryTrans, 
    BinBlock <- split_into_ns(list_to_binary(BlockCol), NSquared, [])].
-\end{verbatim}
+\end{minted}
  
 One of the big selling points of Erlang is its efficiency. It can be very fast. This comes with a similar warning to low-level languages such as C: they can be very fast, if you're not wasting memory or resources. One of the biggest places we lose memory when we're hyper-optimizing our code is in required variable assignments. This is the point where we have to step back and take a look at what we're really trying to refactor. We definitely want more testable code, we definitely want fast code, and we also want readable code. In this instance when we're valuing testability and speed over readability, in many cases these extra variable assignments are just extra fluff that we really don't need. We can see there is one location above where we assign NSquared that we keep in the bottom block. This is again, for speed reasons.  Although it costs us memory to store this value, we're only computing it once, rather than twice in this small method snippet.
    
-\begin{verbatim}
+\begin{minted}{erlang}
 getSubmatrices(Puzzle) -> 
  NSquared = length(Puzzle),
  BinaryEncoded = 
@@ -108,7 +108,7 @@ getSubmatrices(Puzzle) ->
  [lists:map(fun add_unk/1, binary_to_list(BinBlock))
    || BlockCol <- BinaryTrans, 
    BinBlock <- split_into_ns(list_to_binary(BlockCol), NSquared, [])].
-\end{verbatim}
+\end{minted}
     
  
 \subsection{Conclusion}

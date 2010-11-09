@@ -15,21 +15,21 @@ Lisp and languages based on it can easily be recognized by their extreme use of 
 
 One of the easiest programming pitfalls to fall into is the creation of functions that are longer than they need to be or should be. While there are several reasons that a developer should attempt to write shorter methods, the first and most important is that it increases the likelihood that other functions can use a function. This one simple refactoring technique will allow higher level functions to read much better since they will call well named functions which can actually be read, similarly to how a comment would. While this idea does take some getting used to if a developer is used to writing longer functions, the addition of small functions with good, clear names will greatly improve the readability, modifiability, and understandability of a code base. Consider this Lisp snippet:
 
-\begin{verbatim}
+\begin{minted}{common-lisp}
 (defun list-to-comma-delimited-string (list)
   (let ((output (format nil "~A" (car list))))
     (dolist (elem (cdr list))
       (setq output 
         (concatenate 'string output "," 
           (format nil "~A" elem)))))
-\end{verbatim}
+\end{minted}
 
 This function is a good example of one that is trying to do too much. By calling a second function designed for the formatting of strings, the developer can make the original function much easier to read and understand:
 
-\begin{verbatim}
+\begin{minted}{common-lisp}
 (defun list-to-comma-delimited-string (list)
   (format nil "~{~A~^,~}" list))
-\end{verbatim}
+\end{minted}
 
 \subsubsection{Rename Function / Variable}
 
@@ -37,41 +37,41 @@ The first refactoring technique introduced in this section was the idea of short
 
 A simple example of this would be the following function:
 
-\begin{verbatim}
+\begin{minted}{common-lisp}
 (defun rev (L)
   (let ((return-value '()))
     (dolist (e L) (push e return-value))
     return-value))
-\end{verbatim}
+\end{minted}
 
 While after reading the code for this function, it may be apparent that it reverses a list, reading a call to this function from another one would not make that fact obvious. This means that as a developer is reading a function which calls this one, they will be forced to read the code for this function to understand the one they are currently looking at. This will tend to break their train of thought and force them to spend a significant amount of extra time reading code that could have been avoided through a function name that made sense\cite{lisprefactoring}.
 
-\begin{verbatim}
+\begin{minted}{common-lisp}
 (defun reverse-list (list)
   (let ((return-value '()))
     (dolist (e list) (push e return-value))
     return-value))
-\end{verbatim}
+\end{minted}
 
 By naming the function reverse-list instead of rev, it becomes apparent that this function will reverse the passed in list without having to look at the code for it.
 
 Along the same lines, it is just as important to name variables inside of functions well. By naming a variable in clear manner, a developer can make his application much more readable. In Lisp, it is very common to create a variable to pass to a recursive function to act as an accumulator. While the developer has the choice to name this variable whatever they want it can often be helpful to name it something that makes it obvious to another developer that this variable is the accumulator. Looking at the same reverse list function as before we can see this.
 
-\begin{verbatim}
+\begin{minted}{common-lisp}
 (defun reverse-list (list)
   (let ((r '()))
     (dolist (e list) (push e r))
     r))
-\end{verbatim}
+\end{minted}
 
 In this function the variable \verb!r! acts as the accumulator for the function. However, it is very difficult to figure this out in the function, and once a developer has determined that \verb!r! is the value to be returned, it can be difficult for them to remember that each time they see the variable. In order to combat this issue, a developer should attempt to name their variables in a clear way:
 
-\begin{verbatim}
+\begin{minted}{common-lisp}
 (defun reverse-list (list)
   (let ((return-value '()))
     (dolist (e list) (push e return-value))
     return-value))
-\end{verbatim}
+\end{minted}
 
 This refactored function is much easier to understand than the first version -- it is very apparent what the purpose of the \verb!return-value! variable is.
 
@@ -79,16 +79,16 @@ This refactored function is much easier to understand than the first version -- 
 
 One of the simplest yet most powerful refactoring techniques is simply how the code is formatted in a file. In Lisp, since every function called must be made in a set of parentheses, it becomes quite easy to miss where one set of parentheses beings and another ends. In order to avoid this confusion, formatting the code such that new function calls appear on a new line and are indented greatly aids in improving the readability of the code. Consider this Lisp code, line-broken only to fit on the page:
 
-\begin{verbatim}
+\begin{minted}{common-lisp}
 (fomus :output '(:lilypond :view t) :parts (list (make-part :name 
 "Piano" :instr :piano :events (loop repeat 10 for off = (random 
 30.0) and dur = (1+ (random 3.0)) collect (make-note :off off :dur 
 dur :note (+ 60 (random 25)))))))
-\end{verbatim}
+\end{minted}
 
 While this is in fact valid Lisp code, it is extremely difficult to read and understand. By simply adding in a few line breaks and tabs, we can end up with a function that is much clearer.
 
-\begin{verbatim}
+\begin{minted}{common-lisp}
 (fomus
  :output '(:lilypond :view t)
  :parts
@@ -101,28 +101,28 @@ While this is in fact valid Lisp code, it is extremely difficult to read and und
 	 for off = (random 30.0)
 	 and dur = (1+ (random 3.0))
 	 collect (make-note :off off :dur dur :note (+ 60 (random 25)))))))
-\end{verbatim}
+\end{minted}
 
 \subsubsection{Remove Magic Numbers}
  
 The final Lisp refactoring technique I’m going to cover is replacing a magic number with a constant. Magic numbers are numbers with a specific value which must be used inside of a program. While at first glance it may seem like a reasonable idea to use a number in your program without assigning it to a variable, they can quickly make the code much less readable. This happens because often when magic numbers are used, they will need to change during the development of the application. If the number is used in multiple locations then it must be changed in each location. If the developer forgets to change it in one place it create extremely confusing scenarios which make debugging the application much more difficult. A simple example of this technique can be seen in the following example.
  
-\begin{verbatim}
+\begin{minted}{common-lisp}
 (defun factorial (n)
   (if (<= n 1)
       1
       (* n (factorial (- n 1)))))
-\end{verbatim}
+\end{minted}
  
 Looking at this example we can see the use of two seperate magic numbers. In this case both numbers are 1, making it all the more confusing if only the base case for the problem needed to change. It would be an easy to simply change all the 1’s causing a bug in the function.
 
-\begin{verbatim} 
+\begin{minted}{common-lisp} 
 (defun factorial (n)
  (let [base 1] [subtract-value 1]
   (if (<= n base)
       base
       (* n (factorial (- n subtract-value))))))
-\end{verbatim}
+\end{minted}
  
 The refactored code here is much clearer and the magic numbers are defined in the let, then called every where else in the function.
  
@@ -134,13 +134,13 @@ Although tests cannot prove that a method works correctly, it would be extremely
  
 In Lisp one of the easiest ways to define tests is through the lisp-unit package. It allows the developer to write tests similar to:
  
-\begin{verbatim}
+\begin{minted}{common-lisp}
 (define-test test-factorial
  (assert-equal 1 (factorial 1))
  (assert-equal 2 (factorial 2))
  (assert-equal 6 (factorial 3))
  (assert-equal 24 (factorial 4)))
-\end{verbatim}
+\end{minted}
  
 A suite of tests similar to this one provides the programmer an easy way of ensuring their code works as expected before and after any changes are made. 
  

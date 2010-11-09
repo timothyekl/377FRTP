@@ -25,23 +25,23 @@ One of the most commonly used refactoring techniques available in Scala is Extra
 
 In order to demonstrate this technique, consider the following code:
 
-\begin{verbatim}
+\begin{minted}{scala}
 val sb = new StringBuilder 
 val name = new BufferedReader(new InputStreamReader(System.in)).readLine 
 sb.append("Your name is: ")
 sb.append(name)
-\end{verbatim}
+\end{minted}
 
 This code is pretty simple and straightforward, however it can be extracted in order to increase the code's overall reusability. We can select a portion of the code and create a private method from it:
 
-\begin{verbatim}
+\begin{minted}{scala}
 def askName(out: String => Any) { 
 	val name = new BufferedReader(new InputStreamReader(System.in)).readLine 
 	out("Your name is: ") 
 	out(name)
 }
 val sb = new StringBuilder askName(sb.append)
-\end{verbatim}
+\end{minted}
 
 This new method takes a function of type \verb!String -> Any! called `out' as it's parameter. Scala gives us the unique opportunity to pass an object's method as an argument instead of a function, as long as the signatures match. This can be seen with the last line of code involving the StringBuilder. This extracted method can now be used with any other function or method that satisfies the signature, greatly increasing its reusability.
 
@@ -49,7 +49,7 @@ This new method takes a function of type \verb!String -> Any! called `out' as it
 
 Extract Local is a technique is accomplished by creating a new local variable from an expression; replacing the original expression with a reference to the new variable. This allows the user to simplify long expressions making the code much more readable. Also, by extracting new local variables we can debug a program much faster by printing out the immediate results of an expression. Consider this example:
 
-\begin{verbatim}
+\begin{minted}{scala}
 object ExtractLocal {
   def main(args: Array[String]) {
     if(System.getProperties.get("os.name") == "Linux") {
@@ -59,11 +59,11 @@ object ExtractLocal {
     }
   }
 }
-\end{verbatim}
+\end{minted}
 
 While this is not a badly written block of code, it could be improved. The Scala syntax and method names give us a good idea of what the intent of the expression is, but by extracting it and creating a new value we can make it much more readable:
 
-\begin{verbatim}
+\begin{minted}{scala}
 object ExtractLocal {
   def main(args: Array[String]) {
     val isLinux = System.getProperties.get("os.name") == "Linux"
@@ -74,30 +74,30 @@ object ExtractLocal {
     }
   }
 }
-\end{verbatim}
+\end{minted}
 
 \subsubsection{Inline Local}
 
 Inline Local is a technique that enables the programmer to remove unneeded local values. By removing the value and replacing the references to the value with the value's content, we can make the code run much more efficiently. Consider this example:
 
-\begin{verbatim}
+\begin{minted}{scala}
 object InlineLocal {
   def main(args: Array[String]) {
     val x = "This is quite unnecessary."
     println(x) 
   }
 }
-\end{verbatim}
+\end{minted}
 
 By using the technique, we get:
 
-\begin{verbatim}
+\begin{minted}{scala}
 object InlineLocal {
   def main(args: Array[String]) {
     println("This is quite unnecessary.") 
   }
 }
-\end{verbatim}
+\end{minted}
 
 Local values can be included, but vars are not supported. This technique may be obvious and trivial to most experienced programmers, but it is still very important to use in order to keep the code readable and running efficiently.
 

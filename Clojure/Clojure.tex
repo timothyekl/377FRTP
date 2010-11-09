@@ -31,34 +31,34 @@ Note: throughout the remainder of this section, code blocks may contain comments
 
 One of the simplest refactoring techniques available in Clojure is a simple rename. While relatively trivial to do, this is also a fairly powerful technique - Hickey has gone so far as to call it ``the number one refactoring''\cite{rerefactoring}. The simplicity of the technique comes from the static typing of names within any program. For example, when attempting to refactor a variable \verb!bar! within the \verb!foo! namespace (written as \verb!foo/bar!), it is trivial for a good IDE or compiler to determine what instances of \verb!bar! are syntactically equivalent to the target \verb!bar! by checking the variables' scope and namespaces. Hence, given the Clojure snippet:
 
-\begin{verbatim}
+\begin{minted}{clojure}
 (def bar 1)
 
 (defn foo[]
     (let [bar 2]
         (println bar)))
-\end{verbatim}
+\end{minted}
 
 Renaming the inner variable \verb!bar! would resolve to the local instance defined within the \verb!let! statement (and hence apply the rename refactoring to that \verb!let!), while renaming the instance of \verb!bar! defined in the \verb!def! statement would have no other effects (since there are no inner instances of \verb!bar!) that resolve to that definition. The results of these two refactorings are shown as follows:
 
 \begin{tabular}{m{2in} m{2in}} \\
-\begin{verbatim}
-// Rename def'd bar
+\begin{minted}{clojure}
+; Rename def'd bar
 (def baz 1)
 
 (defn foo[]
     (let [bar 2]
         (println bar)))
-\end{verbatim}
+\end{minted}
 &
-\begin{verbatim}
-// Rename let'd bar
+\begin{minted}{clojure}
+; Rename let'd bar
 (def bar 1)
 
 (defn foo[]
     (let [baz 2]
         (println baz)))
-\end{verbatim}
+\end{minted}
 \end{tabular}
 
 The advantage of this refactoring technique lies primarily in its potential to enhance code readability and maintainability - a developer who can make sense of variable naming schemes and understanding the meaning underlying a piece of code is much more likely to be productive and make workable changes than one who has no idea what's going on in a code snippet. Furthermore, this technique is especially powerful because of the simplicity of its application - a sufficiently ``intelligent'' editing environment can easily handle this sort of change, and in fact several projects exist on GitHub that handle precisely this refactoring (most notably \verb!clojure-refactoring! by Tom Crayford \cite{clojurerefactoring}).
@@ -69,32 +69,32 @@ A refactoring that has a strong similarity to a well-known object-oriented techn
 
 Consider, as a trivial example, a reimplementation of the Java method \verb!modPow!, which takes as arguments three integers $a, b, c$ and returns the result of the expression $a^{b} \; mod \; c$. (This method has common use in cryptographic and modular arithmetic fields.) We could write, for example, an encryption-decryption algorithm for RSA which would take a message $m$ and a public key $(n, e)$, encrypt it, decrypt it with a private key $d$, and assert that the decrypted text is equivalent to the original method (e.g. for implementation testing). Without refactoring, this method might look like:
 
-\begin{verbatim}
-// Encrypt and decrypt a message using RSA
-// Args: message m, public key (n, e), private key d
-// Returns true if encrypted-decrypted message matches original
+\begin{minted}{clojure}
+; Encrypt and decrypt a message using RSA
+; Args: message m, public key (n, e), private key d
+; Returns true if encrypted-decrypted message matches original
 (defn encryptDecrypt [m n e d]
     (let [c (mod (pow m e) n)]
         (let [m2 (mod (pow c d) n)]
             (= m m2))))
-\end{verbatim}
+\end{minted}
 
 We note that the pattern \verb!(mod (pow x y) z)! appears multiple times, and thus we may extract that expression, simplifying the \verb!let! statement and making the functionality it provides available to other users:
 
-\begin{verbatim}
-// Exponentiate and mod the given numbers
-// Args: x y z; returns ((x ^ y) mod z)
+\begin{minted}{clojure}
+; Exponentiate and mod the given numbers
+; Args: x y z; returns ((x ^ y) mod z)
 (defn modPow [x y z]
     (mod (pow x y) z))
 
-// Encrypt and decrypt a message using RSA
-// Args: message m, public key (n, e), private key d
-// Returns true if encrypted-decrypted message matches original
+; Encrypt and decrypt a message using RSA
+; Args: message m, public key (n, e), private key d
+; Returns true if encrypted-decrypted message matches original
 (defn encryptDecrypt [m n e d]
     (let [c (modPow m e n)]
         (let [m2 (modPow c d n)]
             (= m m2))))
-\end{verbatim}
+\end{minted}
 
 \subsubsection{Flatten Reduce}
 
@@ -102,25 +102,25 @@ This technique is one of the first not to have a clear object-oriented counterpa
 
 To illustrate this particular refactoring technique, consider the task of summing numbers contained in a three-dimensional array (represented in Clojure by nested symbol lists). While this can be done recursively, for the purposes of flattening reduces we write the original scenario using the \verb!reduce! function:
 
-\begin{verbatim}
-// For convenience, predefine the dataset (a 3D integer array)
+\begin{minted}{clojure}
+; For convenience, predefine the dataset (a 3D integer array)
 (def xs '(((1 2) (3 4)) ((5 6) (7 8))))
 
-// Provide the sum of all integers in the set
+; Provide the sum of all integers in the set
 (reduce (fn [acc x]
     (reduce (fn [acc y]
         (reduce (fn [acc z] (+ acc z)) acc y)) acc x)) 0 xs)
-\end{verbatim}
+\end{minted}
 
 The repeated explicit application of \verb!reduce! is what we seek to eliminate with this refactoring. In Clojure, the \verb!for! keyword allows developers to apply certain operations over nested sets of objects by flattening those sets; we can apply a \verb!for! operation on the \verb!reduce! to improve the clarity and conciseness of this code block:
 
-\begin{verbatim}
-// For convenience, predefine the dataset (a 3D integer array)
+\begin{minted}{clojure}
+; For convenience, predefine the dataset (a 3D integer array)
 (def xs '(((1 2) (3 4)) ((5 6) (7 8))))
 
-// Apply the reduce for each of the three dimensions
+; Apply the reduce for each of the three dimensions
 (reduce (fn [a b] (+ a b)) 0 (for [x xs, y x, z y] z))
-\end{verbatim}
+\end{minted}
 
 Whether this refactoring truly improves clarity is a subject of some debate; the syntax of the \verb!for! operator is not immediately obvious, especially if the underlying data structure is not understood. In this example, the \verb!for! expands \verb!xs! to a set of objects represented individually as \verb!x!, then does the same for each \verb!y! in \verb!x! and \verb!z! in \verb!y!. It returns a single flattened sequence of integers that originally belonged to separate sublists in the three-dimensional \verb!xs!; at that point, the \verb!reduce! may be applied over the single sequence. Note that the structure of the original dataset can be ``ignored'' in this manner since it is being reduced away regardless; operations where nesting level matters, or where additional information must be retained about the original data structure, flattening reduces is not always possible.
 
@@ -139,28 +139,28 @@ Consider a basic Clojure implementation of the ROT-13 encryption algorithm on a 
 
 In an overly verbose implementation, each of these might be separated, as such:
 
-\begin{verbatim}
+\begin{minted}{clojure}
 (defn asciiToZeroIndex [x] (- x 65))
 (defn zeroIndexToAscii [x] (+ x 65))
 (defn rotate [x] (+ x 13))
 (defn alphabetMod [x] (mod x 26))
 
-// The function might then be applied as
+; The function might then be applied as
 (map zeroIndexToAscii
     (map alphabetMod
         (map rotate
             (map asciiToZeroIndex 
                 '(72 69 76 76 79 87 79 82 76 68)))))
-\end{verbatim}
+\end{minted}
 
 While very compartmentalized and almost painfully obvious as to the purpose of individual functions, the application of this ROT-13 implementation is somewhat lacking in clarity and quite verbose. In addition, there is rarely a call for any of those functions outside the context of the others -- when does a programmer turn to a function called \verb!alphabetMod! instead of simply performing the \verb!mod!? As such, we may compose these four functions together to come up with a single clean ROT-13 function:
 
-\begin{verbatim}
+\begin{minted}{clojure}
 (defn rot13 [x] (+ (mod (+ (- x 65) 13) 26) 65))
 
-// Apply function
+; Apply function
 (map rot13 '(72 69 76 76 79 87 79 82 76 68))
-\end{verbatim}
+\end{minted}
 
 \subsection{Conclusion}
 

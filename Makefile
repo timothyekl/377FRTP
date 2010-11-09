@@ -1,5 +1,5 @@
 # LaTeX document makefile
-TEXFLAGS := -halt-on-error -file-line-error -src-specials -interaction=nonstopmode
+TEXFLAGS := -halt-on-error -file-line-error -src-specials -interaction=nonstopmode -shell-escape
 
 default: FunctionalRefactoring.pdf
 
